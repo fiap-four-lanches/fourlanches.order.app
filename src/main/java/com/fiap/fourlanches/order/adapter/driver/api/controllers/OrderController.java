@@ -3,6 +3,7 @@ package com.fiap.fourlanches.order.adapter.driver.api.controllers;
 import com.fiap.fourlanches.order.application.dto.OrderDTO;
 import com.fiap.fourlanches.order.domain.entities.Order;
 import com.fiap.fourlanches.order.domain.exception.InvalidOrderException;
+import com.fiap.fourlanches.order.domain.exception.OrderNotFoundException;
 import com.fiap.fourlanches.order.domain.usecases.OrderUseCase;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -42,7 +43,7 @@ public class OrderController {
     @PatchMapping(value = "/{orderId}/in_preparation", produces = "application/json")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Void> orderInPreparation(@PathVariable Long orderId)
-            throws InvalidOrderException {
+            throws InvalidOrderException, OrderNotFoundException {
         orderUseCase.orderInPreparation(orderId);
         return ResponseEntity.noContent().build();
     }
