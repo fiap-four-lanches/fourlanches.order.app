@@ -33,23 +33,25 @@ public class OrderUseCaseImpl implements OrderUseCase {
     private final ValidateOrderStatusUseCase validateOrderStatusUseCase;
     private final ProductUseCase productUseCase;
 
+    @Override
     public List<Order> getAllPendingOrdersOrderedByStatusAndCreatedAt() {
         return repository.getAllOrdersOrderedByStatusAndCreatedAt();
     }
 
-    public Order createOrder(OrderDTO orderDTO) throws InvalidOrderException {
+    @Override
+    public Long createOrder(OrderDTO orderDTO) throws InvalidOrderException {
         Order order = orderDTO.toNewOrder();
+
         delegateOrderStatusValidation(order, OrderDTO.builder().status(CREATED).build());
 
         setOrderItemPrices(order);
-
         order.setTotalPrice(order.calculateTotalPrice());
 
         if(!order.isValid()) {
             throw new InvalidOrderException();
         }
 
-        return repository.createOrder(order);
+        return repository.createOrder(order).getId();
     }
 
     public void receiveOrder(Long orderId, boolean paymentApproved) {
@@ -79,11 +81,10 @@ public class OrderUseCaseImpl implements OrderUseCase {
         updateOrderStatus(orderId, CANCELED);
     }
 
+    @Override
     public List<Order> getOrdersByStatus(OrderStatus status) {
         return repository.getOrdersByStatus(status);
     }
-
-    public Order getById(Long orderId) { return repository.getById(orderId); }
 
     private void updateOrderStatus(Long orderId, OrderStatus orderStatus) {
         Order order = repository.getById(orderId);
@@ -106,9 +107,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     private void setOrderItemPrices(Order order) {
-        for (OrderItem item: order.getOrderItems()) {
-            Product product = productUseCase.getProductById(item.getProductId());
-            item.setPrice(product.getPrice().doubleValue());
-        }
+        order.getOrderItems().forEach(item ->
+                item.setPrice(productUseCase.getProductById(item.getProductId()).getPrice().doubleValue()));
     }
 }

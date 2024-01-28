@@ -3,8 +3,9 @@ plugins {
 	id 'org.springframework.boot' version '3.1.0'
 	id 'io.spring.dependency-management' version '1.1.0'
 	id "org.flywaydb.flyway" version "9.8.1"
-	id 'jacoco'
+	id "io.freefair.lombok" version "8.4"
 	id "org.sonarqube" version "4.4.1.3373"
+	id 'jacoco'
 }
 
 group = 'com.fiap.techchallenge.fourlanches'
@@ -15,10 +16,12 @@ java {
 }
 
 sonar {
-  properties {
-    property "sonar.projectKey", "fiap-four-lanches_fourlanches.order.app"
-    property "sonar.organization", "fiap-four-lanches"
-    property "sonar.host.url", "https://sonarcloud.io"
+	properties {
+		property "sonar.projectKey", "fiap-four-lanches_fourlanches.order.app"
+		property "sonar.organization", "fiap-four-lanches"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/*.xml"
+		property "sonar.java.coveragePlugin", "jacoco"
   }
 }
 
@@ -35,8 +38,6 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -54,4 +55,29 @@ flyway {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+
+	reports {
+		xml.enabled true // a flag anteriormente era false
+		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com/fiap/**/application/dto/**.*",
+					"com/fiap/**/SpringJpaConfig*",
+					"com/fiap/**/*Exception*",
+					"com/fiap/**/InternalServerError*",
+					"com/fiap/**/FourLanchesApplication*"
+			])
+		}))
+	}
 }

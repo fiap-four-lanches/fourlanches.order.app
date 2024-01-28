@@ -36,7 +36,7 @@ public class ProductUseCaseImpl implements ProductUseCase {
         if(!product.isValid()) {
             throw new InvalidProductException();
         }
-        return productRepository.create(product);
+        return productRepository.createProduct(product);
     }
 
     public void updateProduct(Long id, ProductDTO productDTO) throws InvalidProductException {
@@ -44,7 +44,6 @@ public class ProductUseCaseImpl implements ProductUseCase {
         if(!product.isValid()) {
             throw new InvalidProductException();
         }
-        productRepository.getProductById(id);
         product.setId(id);
         productRepository.updateProduct(product);
     }

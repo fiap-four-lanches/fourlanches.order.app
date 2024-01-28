@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiap.fourlanches.order.domain.entities.Order;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderItem;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDTO {
 
     @JsonProperty("items")
