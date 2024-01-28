@@ -41,6 +41,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     @Override
     public Long createOrder(OrderDTO orderDTO) throws InvalidOrderException {
         Order order = orderDTO.toNewOrder();
+
         delegateOrderStatusValidation(order, OrderDTO.builder().status(CREATED).build());
 
         setOrderItemPrices(order);
