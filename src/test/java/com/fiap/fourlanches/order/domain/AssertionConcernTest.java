@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static com.fiap.fourlanches.order.domain.AssertationConcern.isNotEmpty;
-import static com.fiap.fourlanches.order.domain.AssertationConcern.isPositive;
+import static com.fiap.fourlanches.order.domain.AssertionConcern.isNotEmpty;
+import static com.fiap.fourlanches.order.domain.AssertionConcern.isPositive;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class AssertationConcernTest {
+public class AssertionConcernTest {
 
   @Test
   public void shouldReturnIsNotEmptyAsTrueWhenStringIsFourlanches() {

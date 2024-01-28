@@ -5,7 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 
-public class AssertationConcern {
+public final class AssertionConcern {
+
+    private AssertionConcern() {
+    }
 
     public static boolean isNotEmpty(String string) {
         return !StringUtils.isEmpty(string);

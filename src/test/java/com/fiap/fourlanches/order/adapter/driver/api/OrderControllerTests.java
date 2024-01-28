@@ -39,9 +39,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@AutoConfigureJsonTesters
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
 public class OrderControllerTests {
 

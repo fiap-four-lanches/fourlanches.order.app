@@ -1,5 +1,6 @@
 package com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -9,16 +10,11 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ApiErrorMessage {
 
     private HttpStatus status;
     private List<String> errors;
-
-    public ApiErrorMessage(HttpStatus status, List<String> errors) {
-        super();
-        this.status = status;
-        this.errors = errors;
-    }
 
     public ApiErrorMessage(HttpStatus status, String error) {
         super();

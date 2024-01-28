@@ -7,8 +7,8 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import java.math.BigDecimal;
 
-import static com.fiap.fourlanches.order.domain.AssertationConcern.isNotEmpty;
-import static com.fiap.fourlanches.order.domain.AssertationConcern.isPositive;
+import static com.fiap.fourlanches.order.domain.AssertionConcern.isNotEmpty;
+import static com.fiap.fourlanches.order.domain.AssertionConcern.isPositive;
 
 @Data
 @Builder
