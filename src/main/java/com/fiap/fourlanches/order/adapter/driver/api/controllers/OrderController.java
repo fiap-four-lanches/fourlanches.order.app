@@ -1,5 +1,7 @@
 package com.fiap.fourlanches.order.adapter.driver.api.controllers;
 
+import com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor.OrderControllerAdvisor;
+import com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor.ProductControllerAdvisor;
 import com.fiap.fourlanches.order.application.dto.OrderDTO;
 import com.fiap.fourlanches.order.domain.entities.Order;
 import com.fiap.fourlanches.order.domain.exception.InvalidOrderException;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@ControllerAdvice(assignableTypes = OrderControllerAdvisor.class)
 @RequestMapping("orders")
 public class OrderController {
 
@@ -66,8 +70,7 @@ public class OrderController {
 
     @PatchMapping(value = "/{orderId}/cancel", produces = "application/json")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Void> orderCanceled(@PathVariable Long orderId)
-            throws InvalidOrderException {
+    public ResponseEntity<Void> orderCanceled(@PathVariable Long orderId) {
         orderUseCase.orderCanceled(orderId);
         return ResponseEntity.noContent().build();
     }

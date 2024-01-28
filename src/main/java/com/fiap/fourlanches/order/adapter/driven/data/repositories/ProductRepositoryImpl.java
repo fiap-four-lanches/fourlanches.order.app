@@ -27,7 +27,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         return jpaRepository.findAll().stream().map(ProductJpaEntity::toProduct).collect(Collectors.toList());
     }
     public List<Product> getProductsByCategory(Category category) {
-        return jpaRepository.findByCategory(category.toString()).stream().map(ProductJpaEntity::toProduct).collect(Collectors.toList());
+        return jpaRepository.findByCategory(category.toString())
+                .stream().map(ProductJpaEntity::toProduct).collect(Collectors.toList());
     }
 
     public void deleteProduct(Long id) {
@@ -39,9 +40,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Long create(Product product) {
-        ProductJpaEntity productJpaEntity = jpaRepository.save(ProductJpaEntity.fromProduct(product));
-        return productJpaEntity.getId();
+    public Long createProduct(Product product) {
+        return jpaRepository.save(ProductJpaEntity.fromProduct(product)).getId();
     }
 
 

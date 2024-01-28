@@ -26,7 +26,7 @@ public class OrderJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     private Long id;
-    @OneToMany(fetch= FetchType.LAZY, mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderItemJpaEntity> orderItems;
     @Column(name = "customer_id")
     private Long customerId;

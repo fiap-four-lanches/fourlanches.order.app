@@ -1,17 +1,22 @@
 package com.fiap.fourlanches.order.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderItem;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Order {
 
@@ -23,8 +28,9 @@ public class Order {
     private LocalDateTime createdAt;
     private Boolean paymentApproved;
 
+    @JsonIgnore
     public boolean isValid() {
-        return !orderItems.isEmpty() && status != null;
+        return !Optional.ofNullable(orderItems).orElse(Collections.emptyList()).isEmpty() && status != null;
     }
 
     public BigDecimal calculateTotalPrice(){

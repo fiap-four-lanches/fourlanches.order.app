@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "order_items")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "order_items")
 public class OrderItemJpaEntity {
 
     @Id

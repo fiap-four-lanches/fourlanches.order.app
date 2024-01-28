@@ -15,7 +15,7 @@ public interface ProductRepository {
 
     List<Product> getProductsByCategory(Category category);
 
-    Long create(Product product);
+    Long createProduct(Product product);
 
     void deleteProduct(Long id);
 
