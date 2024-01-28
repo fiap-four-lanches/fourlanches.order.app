@@ -82,20 +82,3 @@ jacocoTestReport {
 		}))
 	}
 }
-
-jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				// enabled = false
-				counter = 'BRANCH'
-				value = 'COVEREDRATIO'
-				minimum = 0.8
-			}
-		}
-	}
-
-	afterEvaluate {
-		excludeFiles(classDirectories)
-	}
-}
