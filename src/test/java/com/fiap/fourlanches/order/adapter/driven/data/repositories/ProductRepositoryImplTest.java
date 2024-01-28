@@ -62,7 +62,7 @@ public class ProductRepositoryImplTest {
   }
 
   @Test
-  public void shouldGetOrdersByStatus() {
+  public void shouldGetProductByCategory() {
     when(jpaRepository.findByCategory(eq(Category.DRINK.toString())))
             .thenReturn(singletonList(getDefaultProductEntity()));
 
