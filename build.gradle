@@ -66,7 +66,7 @@ jacocoTestReport {
 
 	reports {
 		xml.enabled true // a flag anteriormente era false
-		html.destination file("${buildDir}/jacocoHtml")
+		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
 	}
 
 	afterEvaluate {
