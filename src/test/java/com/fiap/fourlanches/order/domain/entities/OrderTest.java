@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class OrderTest {
 
   @Test
-  void shouldReturnHundredAsTotalPriceWhenPriceIsTenAndQuantityIsTen() {
+  void shouldReturnCorrectPriceAsTotalPriceWhenOrderHasMultipleOrderItems() {
     Order order = Order.builder()
             .orderItems(List.of(
                     OrderItem.builder().price(10).quantity(10).build(),

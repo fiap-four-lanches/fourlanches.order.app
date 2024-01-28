@@ -38,7 +38,7 @@ class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  void given_NewOrder_whenValidateOrderCreated_thenReturnUpdatedOrder() {
+  void given_NewOrder_whenValidateOrderCreated_thenUpdatesStatus() {
     Order newOrder = getOrderDTO(null).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderCreated(newOrder);
@@ -47,7 +47,7 @@ class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  void given_OrderCreated_whenValidateOrderReceived_thenReturnUpdatedOrder() {
+  void given_OrderCreated_whenValidateOrderReceived_thenUpdatesStatus() {
     Order newOrder = getOrderDTO(CREATED).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderReceived(newOrder);
@@ -56,7 +56,7 @@ class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  void given_OrderCreated_whenValidateOrderCanceled_thenReturnUpdatedOrder() {
+  void given_OrderCreated_whenValidateOrderCanceled_thenUpdatesStatus() {
     Order newOrder = getOrderDTO(CREATED).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderCanceled(newOrder);
@@ -65,7 +65,7 @@ class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  void given_OrderReceived_whenValidateOrderInPreparation_thenReturnUpdatedOrder() {
+  void given_OrderReceived_whenValidateOrderInPreparation_thenUpdatesStatus() {
     Order newOrder = getOrderDTO(RECEIVED).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderInPreparation(newOrder);
@@ -74,7 +74,7 @@ class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  void given_OrderInPreparation_whenValidateOrderReady_thenReturnUpdatedOrder() {
+  void given_OrderInPreparation_whenValidateOrderReady_thenUpdatesStatus() {
     Order newOrder = getOrderDTO(IN_PREPARATION).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderReady(newOrder);
@@ -83,7 +83,7 @@ class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  void given_OrderReady_whenValidateOrderFinished_thenReturnUpdatedOrder() {
+  void given_OrderReady_whenValidateOrderFinished_thenUpdatesStatus() {
     Order newOrder = getOrderDTO(READY).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderFinished(newOrder);

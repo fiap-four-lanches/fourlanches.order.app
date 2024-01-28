@@ -82,7 +82,7 @@ class ProductUseCaseImplTest {
   }
 
   @Test
-  void givenProductToBeUpdated_whenUpdateIsSuccessful_ThenReturnId() {
+  void givenProductToBeUpdated_whenUpdateIsSuccessful_ThenRepositoryIsCalled() {
     productUseCase.updateProduct(PRODUCT_ID, getProductDTO());
 
     Product expectedProduct = getProductDTO().toProduct();
