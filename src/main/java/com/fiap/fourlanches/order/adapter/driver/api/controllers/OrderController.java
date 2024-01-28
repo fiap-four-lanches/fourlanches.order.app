@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -40,8 +41,8 @@ public class OrderController {
     @PostMapping(value = "", produces = "application/json")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createOrder(@RequestBody OrderDTO orderDTO) throws InvalidOrderException {
-        Order order = orderUseCase.createOrder(orderDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
+        Long orderId = orderUseCase.createOrder(orderDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
     }
 
     @PatchMapping(value = "/{orderId}/in_preparation", produces = "application/json")

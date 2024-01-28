@@ -44,7 +44,6 @@ public class ProductUseCaseImpl implements ProductUseCase {
         if(!product.isValid()) {
             throw new InvalidProductException();
         }
-        productRepository.getProductById(id);
         product.setId(id);
         productRepository.updateProduct(product);
     }

@@ -1,5 +1,6 @@
 package com.fiap.fourlanches.order.adapter.driver.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -29,11 +30,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.CREATED;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -43,7 +48,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
-public class OrderControllerTests {
+public class OrderControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -73,33 +78,39 @@ public class OrderControllerTests {
 
     @Test
     void givenId_whenOrdersAreFound_ThenReturnOrders() throws Exception {
-        var expectedOrders = singletonList(Order.builder().id(1234L).status(OrderStatus.CREATED).build());
+        var expectedOrders = singletonList(Order.builder().id(1234L).status(CREATED).build());
 
         when(orderUseCase.getAllPendingOrdersOrderedByStatusAndCreatedAt()).thenReturn(expectedOrders);
 
         MockHttpServletResponse response = mvc.perform(get("/orders").accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        ObjectMapper mapper = new ObjectMapper();
-        TypeFactory typeFactory = mapper.getTypeFactory();
-        List<Order> someClassList = mapper.readValue(response.getContentAsString() , typeFactory.constructCollectionType(List.class, Order.class));
+        List<Order> orderList = getOrdersFromResponse(response);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(someClassList).isEqualTo(expectedOrders);
+        assertThat(orderList).isEqualTo(expectedOrders);
     }
 
     @Test
-    void givenOrderToBeSaved_whenSaveIsSuccessful_ThenReturnOrder() throws Exception {
-        Order expectedOrder = Order.builder().id(1234L).status(OrderStatus.CREATED).build();
-        OrderDTO orderToBeSaved = OrderDTO.builder().status(OrderStatus.CREATED).build();
+    void givenOrderToBeSaved_whenSaveIsSuccessful_ThenReturnId() throws Exception {
+        OrderDTO orderToBeSaved = OrderDTO.builder().status(CREATED).build();
 
-        when(orderUseCase.createOrder(orderToBeSaved)).thenReturn(expectedOrder);
+        when(orderUseCase.createOrder(eq(orderToBeSaved))).thenReturn(1234L);
 
         var response = mvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON)
                 .content(getMapper().writeValueAsString(orderToBeSaved))).andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getContentAsString()).isEqualTo(getMapper().writeValueAsString(1234L));
+    }
+
+    @Test
+    void givenId_whenOrderInPreparationIsSuccessful_ThenReturnNoContent() throws Exception {
+        var response = mvc.perform(patch("/orders/1234/in_preparation").accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        verify(orderUseCase).orderInPreparation(1234L);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -127,6 +138,16 @@ public class OrderControllerTests {
     }
 
     @Test
+    void givenId_whenOrderReadyIsSuccessful_ThenReturnNoContent() throws Exception {
+        var response = mvc.perform(patch("/orders/1234/ready").accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        verify(orderUseCase).orderReady(1234L);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+
+    @Test
     void givenId_whenOrderFinishedNotFound_ThenError() throws Exception {
         var expectedErrorMessage = new ApiErrorMessage(HttpStatus.NOT_FOUND, "Order not found");
         doThrow(new OrderNotFoundException()).when(orderUseCase).orderFinished(1234L);
@@ -136,6 +157,15 @@ public class OrderControllerTests {
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat(response.getContentAsString()).isEqualTo(jsonApiErrorMessage.write(expectedErrorMessage).getJson());
+    }
+
+    @Test
+    void givenId_whenOrderFinishedIsSuccessful_ThenReturnNoContent() throws Exception {
+        var response = mvc.perform(patch("/orders/1234/finished").accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        verify(orderUseCase).orderFinished(1234L);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -151,18 +181,48 @@ public class OrderControllerTests {
     }
 
     @Test
+    void givenId_whenOrderCancelIsSuccessful_ThenReturnNoContent() throws Exception {
+        var response = mvc.perform(patch("/orders/1234/cancel").accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        verify(orderUseCase).orderCanceled(1234L);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
     void givenOrderToBeSaved_whenSaveFails_ThenError() throws Exception {
-        var orderToBeSaved = OrderDTO.builder().status(OrderStatus.CREATED).build();
+        var orderToBeSaved = OrderDTO.builder().status(CREATED).build();
 
         var expectedErrorMessage = new ApiErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, "Order could not be processed");
 
-        when(orderUseCase.createOrder(orderToBeSaved)).thenThrow(InvalidOrderException.class);
+        when(orderUseCase.createOrder(eq(orderToBeSaved))).thenThrow(InvalidOrderException.class);
 
         var response = mvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON)
-                        .content(getMapper().writeValueAsString(orderToBeSaved))).andReturn().getResponse();
+                .content(getMapper().writeValueAsString(orderToBeSaved))).andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         assertThat(response.getContentAsString()).isEqualTo(jsonApiErrorMessage.write(expectedErrorMessage).getJson());
+    }
+
+    @Test
+    void givenStatus_whenOrdersAreFound_ThenReturnOrders() throws Exception {
+        var expectedOrders = singletonList(Order.builder().id(1234L).status(CREATED).build());
+
+        when(orderUseCase.getOrdersByStatus(eq(CREATED))).thenReturn(expectedOrders);
+
+        MockHttpServletResponse response = mvc.perform(get("/orders/status/" + CREATED)
+                .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+
+        List<Order> orderList = getOrdersFromResponse(response);
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(orderList).isEqualTo(expectedOrders);
+    }
+
+    private static List<Order> getOrdersFromResponse(MockHttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
+        ObjectMapper mapper = new ObjectMapper();
+        TypeFactory typeFactory = mapper.getTypeFactory();
+        return  mapper.readValue(response.getContentAsString() , typeFactory.constructCollectionType(List.class, Order.class));
     }
 
     private static ObjectWriter getMapper() {

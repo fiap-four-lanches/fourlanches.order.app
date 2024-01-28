@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.math.BigDecimal.valueOf;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -33,11 +35,8 @@ public class Order {
         return !Optional.ofNullable(orderItems).orElse(Collections.emptyList()).isEmpty() && status != null;
     }
 
-    public BigDecimal calculateTotalPrice(){
-        double price = 0;
-        for (OrderItem orderItem: this.orderItems) {
-            price += orderItem.getPrice() * orderItem.getQuantity();
-        }
-        return BigDecimal.valueOf(price);
+    public BigDecimal calculateTotalPrice() {
+        return orderItems.stream().reduce(BigDecimal.ZERO, (subtotal, orderItem) ->
+                subtotal.add(valueOf(orderItem.getPrice()).multiply(valueOf(orderItem.getQuantity()))), BigDecimal::add);
     }
 }
