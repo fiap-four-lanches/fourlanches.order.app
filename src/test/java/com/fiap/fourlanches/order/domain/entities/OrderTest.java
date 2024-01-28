@@ -5,7 +5,9 @@ import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -15,13 +17,12 @@ class OrderTest {
   @Test
   void shouldReturnHundredAsTotalPriceWhenPriceIsTenAndQuantityIsTen() {
     Order order = Order.builder()
-            .orderItems(singletonList(OrderItem.builder()
-                    .price(10)
-                    .quantity(10)
-                    .build()))
+            .orderItems(List.of(
+                    OrderItem.builder().price(10).quantity(10).build(),
+                    OrderItem.builder().price(5).quantity(20).build()))
             .build();
 
-    assertThat(order.calculateTotalPrice()).isEqualTo(new BigDecimal("100.0"));
+    assertThat(order.calculateTotalPrice()).isEqualTo(new BigDecimal("200.0"));
   }
 
   @Test
