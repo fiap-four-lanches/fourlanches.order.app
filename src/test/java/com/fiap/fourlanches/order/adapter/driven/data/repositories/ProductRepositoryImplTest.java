@@ -25,21 +25,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductRepositoryImplTest {
+class ProductRepositoryImplTest {
 
-  public static final long PRODUCT_ID = 1234L;
+  private static final long PRODUCT_ID = 1234L;
   @Mock
   private ProductJpaRepository jpaRepository;
 
   private ProductRepository productRepository;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.productRepository = new ProductRepositoryImpl(jpaRepository);
   }
 
   @Test
-  public void shouldGetProductById() {
+  void shouldGetProductById() {
     when(jpaRepository.findById(eq(PRODUCT_ID))).thenReturn(Optional.of(getDefaultProductEntity()));
 
     Product expectedProduct = productRepository.getProductById(PRODUCT_ID);
@@ -48,12 +48,12 @@ public class ProductRepositoryImplTest {
   }
 
   @Test
-  public void shouldThrowProductNotFoundWhenGetProductByIdDoesNotExist() {
+  void shouldThrowProductNotFoundWhenGetProductByIdDoesNotExist() {
     assertThrows(ProductNotFoundException.class, () -> productRepository.getProductById(PRODUCT_ID));
   }
 
   @Test
-  public void shouldGetProducts() {
+  void shouldGetProducts() {
     when(jpaRepository.findAll()).thenReturn(singletonList(getDefaultProductEntity()));
 
     List<Product> expectedList = productRepository.getProducts();
@@ -62,7 +62,7 @@ public class ProductRepositoryImplTest {
   }
 
   @Test
-  public void shouldGetProductByCategory() {
+  void shouldGetProductByCategory() {
     when(jpaRepository.findByCategory(eq(Category.DRINK.toString())))
             .thenReturn(singletonList(getDefaultProductEntity()));
 
@@ -72,21 +72,21 @@ public class ProductRepositoryImplTest {
   }
 
   @Test
-  public void shouldDeleteProduct() {
+  void shouldDeleteProduct() {
     productRepository.deleteProduct(PRODUCT_ID);
 
     verify(jpaRepository).deleteById(eq(PRODUCT_ID));
   }
 
   @Test
-  public void shouldUpdateProduct() {
+  void shouldUpdateProduct() {
     productRepository.updateProduct(getDefaultProductEntity().toProduct());
 
     verify(jpaRepository).save(eq(getDefaultProductEntity()));
   }
 
   @Test
-  public void shouldCreateProduct() {
+  void shouldCreateProduct() {
     when(jpaRepository.save(any(ProductJpaEntity.class))).thenReturn(getDefaultProductEntity());
 
     Long expectedProductId = productRepository.createProduct(getDefaultProductEntity().toProduct());

@@ -23,21 +23,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductUseCaseImplTest {
+class ProductUseCaseImplTest {
 
-  public static final long PRODUCT_ID = 1234L;
+  private static final long PRODUCT_ID = 1234L;
   @Mock
   private ProductRepository productRepository;
 
   private ProductUseCase productUseCase;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
       productUseCase = new ProductUseCaseImpl(productRepository);
   }
 
   @Test
-  public void givenId_whenGetProductById_thenReturnProduct() {
+  void givenId_whenGetProductById_thenReturnProduct() {
     Product product = getProductDTO().toProduct();
     when(productRepository.getProductById(PRODUCT_ID)).thenReturn(product);
 
@@ -47,7 +47,7 @@ public class ProductUseCaseImplTest {
   }
 
   @Test
-  public void whenGetProducts_thenReturnProduct() {
+  void whenGetProducts_thenReturnProduct() {
     Product product = getProductDTO().toProduct();
     when(productRepository.getProducts()).thenReturn(singletonList(product));
 
@@ -57,7 +57,7 @@ public class ProductUseCaseImplTest {
   }
 
   @Test
-  public void givenCategory_whenProductsWithSameCategoryAreFound_ThenReturnProducts() {
+  void givenCategory_whenProductsWithSameCategoryAreFound_ThenReturnProducts() {
     Product product = getProductDTO().toProduct();
     when(productRepository.getProductsByCategory(eq(DRINK))).thenReturn(singletonList(product));
 
@@ -67,7 +67,7 @@ public class ProductUseCaseImplTest {
   }
 
   @Test
-  public void givenProductToBeCreated_whenCreateIsSuccessful_ThenReturnId() {
+  void givenProductToBeCreated_whenCreateIsSuccessful_ThenReturnId() {
     when(productRepository.createProduct(getProductDTO().toProduct())).thenReturn(PRODUCT_ID);
 
     Long actualId = productUseCase.createProduct(getProductDTO());
@@ -76,13 +76,13 @@ public class ProductUseCaseImplTest {
   }
 
   @Test
-  public void givenProductToBeCreated_whenCreateFails_ThenError() {
+  void givenProductToBeCreated_whenCreateFails_ThenError() {
     assertThrows(InvalidProductException.class,
             () -> productUseCase.createProduct(getInvalidProductDTO()));
   }
 
   @Test
-  public void givenProductToBeUpdated_whenUpdateIsSuccessful_ThenReturnId() {
+  void givenProductToBeUpdated_whenUpdateIsSuccessful_ThenReturnId() {
     productUseCase.updateProduct(PRODUCT_ID, getProductDTO());
 
     Product expectedProduct = getProductDTO().toProduct();
@@ -91,13 +91,13 @@ public class ProductUseCaseImplTest {
   }
 
   @Test
-  public void givenProductToBeUpdated_whenUpdateFails_ThenError() {
+  void givenProductToBeUpdated_whenUpdateFails_ThenError() {
     assertThrows(InvalidProductException.class,
             () -> productUseCase.updateProduct(PRODUCT_ID, getInvalidProductDTO()));
   }
 
   @Test
-  public void givenId_whenDeleteProduct_ThenVerifyDeleteIsCalled() {
+  void givenId_whenDeleteProduct_ThenVerifyDeleteIsCalled() {
     productUseCase.deleteProduct(PRODUCT_ID);
 
     verify(productRepository).deleteProduct(PRODUCT_ID);

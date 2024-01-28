@@ -24,21 +24,22 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderRepositoryImplTest {
+class OrderRepositoryImplTest {
 
-  public static final long ORDER_ID = 1234L;
+  private static final long ORDER_ID = 1234L;
+
   @Mock
   private OrderJpaRepository jpaRepository;
 
   private OrderRepository orderRepository;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.orderRepository = new OrderRepositoryImpl(jpaRepository);
   }
 
   @Test
-  public void shouldCreateOrder() {
+  void shouldCreateOrder() {
     when(jpaRepository.save(any(OrderJpaEntity.class))).thenReturn(getDefaultOrderEntity());
 
     Order expectedOrder = orderRepository.createOrder(getDefaultOrderEntity().toOrder());
@@ -48,7 +49,7 @@ public class OrderRepositoryImplTest {
   }
 
   @Test
-  public void shouldGetOrderById() {
+  void shouldGetOrderById() {
     when(jpaRepository.getReferenceById(eq(ORDER_ID))).thenReturn(getDefaultOrderEntity());
     Order expectedOrder = orderRepository.getById(ORDER_ID);
 
@@ -56,7 +57,7 @@ public class OrderRepositoryImplTest {
   }
 
   @Test
-  public void shouldSaveOrder() {
+  void shouldSaveOrder() {
     Boolean expected = orderRepository.save(getDefaultOrderEntity().toOrder());
 
     verify(jpaRepository).save(eq(getDefaultOrderEntity()));
@@ -64,7 +65,7 @@ public class OrderRepositoryImplTest {
   }
 
   @Test
-  public void shouldGetOrdersByStatus() {
+  void shouldGetOrdersByStatus() {
     when(jpaRepository.findByStatus(eq(CREATED.toString())))
             .thenReturn(singletonList(getDefaultOrderEntity()));
 
@@ -74,7 +75,7 @@ public class OrderRepositoryImplTest {
   }
 
   @Test
-  public void shouldGetAllOrdersOrderedByStatusAndCreatedAt() {
+  void shouldGetAllOrdersOrderedByStatusAndCreatedAt() {
     when(jpaRepository.getAllPendingOrdersOrderedByStatusAndCreatedAt())
             .thenReturn(singletonList(getDefaultOrderEntity()));
 
@@ -84,7 +85,7 @@ public class OrderRepositoryImplTest {
   }
 
   @Test
-  public void shouldUpdateOrder() {
+  void shouldUpdateOrder() {
     when(jpaRepository.getReferenceById(eq(ORDER_ID))).thenReturn(OrderJpaEntity.builder().id(ORDER_ID)
             .orderItems(emptyList()).build());
 

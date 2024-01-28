@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GeneralControllerAdvisorTest {
+class GeneralControllerAdvisorTest {
 
   @Test
-  public void shouldHandleInternalServerErrorException() {
+  void shouldHandleInternalServerErrorException() {
     var expectedErrorMessage = new ApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "an error happened");
 
     ResponseEntity<ApiErrorMessage> response = new GeneralControllerAdvisor().handleInternalServerErrorException(null);

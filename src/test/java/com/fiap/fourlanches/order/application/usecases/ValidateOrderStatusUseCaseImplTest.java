@@ -24,21 +24,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class ValidateOrderStatusUseCaseImplTest {
+class ValidateOrderStatusUseCaseImplTest {
 
-  public static final long ORDER_ID = 1234L;
-  public static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(20.0);
-  public static final Long CUSTOMER_ID = 5678L;
+  private static final long ORDER_ID = 1234L;
+  private static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(20.0);
+  private static final Long CUSTOMER_ID = 5678L;
 
   private ValidateOrderStatusUseCase validateOrderStatusUseCase;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     validateOrderStatusUseCase = new ValidateOrderStatusUseCaseImpl();
   }
 
   @Test
-  public void given_NewOrder_whenValidateOrderCreated_thenReturnUpdatedOrder() {
+  void given_NewOrder_whenValidateOrderCreated_thenReturnUpdatedOrder() {
     Order newOrder = getOrderDTO(null).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderCreated(newOrder);
@@ -47,7 +47,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderCreated_whenValidateOrderReceived_thenReturnUpdatedOrder() {
+  void given_OrderCreated_whenValidateOrderReceived_thenReturnUpdatedOrder() {
     Order newOrder = getOrderDTO(CREATED).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderReceived(newOrder);
@@ -56,7 +56,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderCreated_whenValidateOrderCanceled_thenReturnUpdatedOrder() {
+  void given_OrderCreated_whenValidateOrderCanceled_thenReturnUpdatedOrder() {
     Order newOrder = getOrderDTO(CREATED).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderCanceled(newOrder);
@@ -65,7 +65,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderReceived_whenValidateOrderInPreparation_thenReturnUpdatedOrder() {
+  void given_OrderReceived_whenValidateOrderInPreparation_thenReturnUpdatedOrder() {
     Order newOrder = getOrderDTO(RECEIVED).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderInPreparation(newOrder);
@@ -74,7 +74,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderInPreparation_whenValidateOrderReady_thenReturnUpdatedOrder() {
+  void given_OrderInPreparation_whenValidateOrderReady_thenReturnUpdatedOrder() {
     Order newOrder = getOrderDTO(IN_PREPARATION).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderReady(newOrder);
@@ -83,7 +83,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderReady_whenValidateOrderFinished_thenReturnUpdatedOrder() {
+  void given_OrderReady_whenValidateOrderFinished_thenReturnUpdatedOrder() {
     Order newOrder = getOrderDTO(READY).toNewOrder();
 
     validateOrderStatusUseCase.validateOrderFinished(newOrder);
@@ -92,7 +92,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderFinished_whenValidateOrderReceived_thenError() {
+  void given_OrderFinished_whenValidateOrderReceived_thenError() {
     Order newOrder = getOrderDTO(FINISHED).toNewOrder();
 
     assertThrows(IncorrectOrderStatusException.class,
@@ -101,7 +101,7 @@ public class ValidateOrderStatusUseCaseImplTest {
   }
 
   @Test
-  public void given_OrderCanceled_whenValidateOrderReceived_thenError() {
+  void given_OrderCanceled_whenValidateOrderReceived_thenError() {
     Order newOrder = getOrderDTO(CANCELED).toNewOrder();
 
     assertThrows(IncorrectOrderStatusException.class,

@@ -11,15 +11,15 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-public class OrderJpaEntityTest {
+class OrderJpaEntityTest {
 
-  public static final Long ORDER_ID = 1234L;
-  public static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(10.0);
-  public static final Long CUSTOMER_ID = 5678L;
-  public static final LocalDateTime CREATED_AT = LocalDateTime.now();
+  private static final Long ORDER_ID = 1234L;
+  private static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(10.0);
+  private static final Long CUSTOMER_ID = 5678L;
+  private static final LocalDateTime CREATED_AT = LocalDateTime.now();
 
   @Test
-  public void shouldConvertEntityToOrder() {
+  void shouldConvertEntityToOrder() {
     OrderItemJpaEntity itemEntity = OrderItemJpaEntity.builder().id(1L).productId(2L).quantity(3).price(4).build();
 
     Order order = OrderJpaEntity.builder().id(ORDER_ID).totalPrice(TOTAL_PRICE).status(OrderStatus.CREATED.toString())
@@ -36,7 +36,7 @@ public class OrderJpaEntityTest {
   }
 
   @Test
-  public void shouldConvertEntityFromOrder() {
+  void shouldConvertEntityFromOrder() {
     OrderItemJpaEntity itemEntity = OrderItemJpaEntity.builder().productId(2L).quantity(3).price(4).build();
     Order order = Order.builder().id(ORDER_ID).totalPrice(TOTAL_PRICE).status(OrderStatus.CREATED).customerId(CUSTOMER_ID)
             .createdAt(CREATED_AT).paymentApproved(true).orderItems(singletonList(itemEntity.toOrderItem())).build();

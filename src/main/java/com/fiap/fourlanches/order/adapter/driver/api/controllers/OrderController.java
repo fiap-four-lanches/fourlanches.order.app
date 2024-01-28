@@ -1,7 +1,6 @@
 package com.fiap.fourlanches.order.adapter.driver.api.controllers;
 
 import com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor.OrderControllerAdvisor;
-import com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor.ProductControllerAdvisor;
 import com.fiap.fourlanches.order.application.dto.OrderDTO;
 import com.fiap.fourlanches.order.domain.entities.Order;
 import com.fiap.fourlanches.order.domain.exception.InvalidOrderException;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController

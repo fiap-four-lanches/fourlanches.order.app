@@ -10,13 +10,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ProductJpaEntityTest {
 
-  public static final Long ID = 1234L;
-  public static final BigDecimal PRICE = BigDecimal.valueOf(10.0);
-  public static final String NAME = "name";
-  public static final String DESCRIPTION = "description";
+  private static final Long ID = 1234L;
+  private static final BigDecimal PRICE = BigDecimal.valueOf(10.0);
+  private static final String NAME = "name";
+  private static final String DESCRIPTION = "description";
 
   @Test
-  public void shouldConvertEntityToProduct() {
+  void shouldConvertEntityToProduct() {
     Product product = ProductJpaEntity.builder()
             .id(ID)
             .name(NAME)
@@ -35,7 +35,7 @@ class ProductJpaEntityTest {
   }
 
   @Test
-  public void shouldConvertEntityFromProduct() {
+  void shouldConvertEntityFromProduct() {
     ProductJpaEntity productJpaEntity = ProductJpaEntity.fromProduct(Product.builder()
             .id(ID)
             .name(NAME)

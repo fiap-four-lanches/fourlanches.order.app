@@ -6,10 +6,10 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class ProductTest {
+class ProductTest {
 
   @Test
-  public void shouldReturnIsValidAsTrueWhenEverythingIsFilledAndIsAvailable() {
+  void shouldReturnIsValidAsTrueWhenEverythingIsFilledAndIsAvailable() {
     Product product = Product.builder()
             .category(Category.DRINK).name("Guarana").description("Bebida")
             .price(new BigDecimal("10")).isAvailable(true).build();
@@ -18,7 +18,7 @@ public class ProductTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenCategoryIsEmpty() {
+  void shouldReturnIsValidAsFalseWhenCategoryIsEmpty() {
     Product product = Product.builder()
             .name("Guarana").description("Bebida")
             .price(new BigDecimal("10")).isAvailable(true).build();
@@ -27,7 +27,7 @@ public class ProductTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenNameIsEmpty() {
+  void shouldReturnIsValidAsFalseWhenNameIsEmpty() {
     Product product = Product.builder()
             .category(Category.DRINK).description("Bebida")
             .price(new BigDecimal("10")).isAvailable(true).build();
@@ -36,7 +36,7 @@ public class ProductTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenDescriptionIsEmpty() {
+  void shouldReturnIsValidAsFalseWhenDescriptionIsEmpty() {
     Product product = Product.builder()
             .category(Category.DRINK).name("Guarana")
             .price(new BigDecimal("10")).isAvailable(true).build();
@@ -45,7 +45,7 @@ public class ProductTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenPriceIsNotPositive() {
+  void shouldReturnIsValidAsFalseWhenPriceIsNotPositive() {
     Product product = Product.builder()
             .category(Category.DRINK).name("Guarana").description("Bebida")
             .price(new BigDecimal("-10")).isAvailable(true).build();
@@ -54,7 +54,7 @@ public class ProductTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenAvailableIsFalse() {
+  void shouldReturnIsValidAsFalseWhenAvailableIsFalse() {
     Product product = Product.builder()
             .category(Category.DRINK).name("Guarana").description("Bebida")
             .price(new BigDecimal("10")).isAvailable(false).build();

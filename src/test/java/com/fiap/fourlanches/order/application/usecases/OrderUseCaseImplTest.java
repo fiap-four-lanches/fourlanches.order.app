@@ -28,11 +28,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderUseCaseImplTest {
+class OrderUseCaseImplTest {
 
-  public static final long ORDER_ID = 1234L;
-  public static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(20.0);
-  public static final Long CUSTOMER_ID = 5678L;
+  private static final long ORDER_ID = 1234L;
+  private static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(20.0);
+  private static final Long CUSTOMER_ID = 5678L;
 
   @Mock
   private OrderRepository orderRepository;
@@ -46,12 +46,12 @@ public class OrderUseCaseImplTest {
   private OrderUseCase orderUseCase;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     orderUseCase = new OrderUseCaseImpl(orderRepository, validateOrderStatusUseCase, productUseCase);
   }
 
   @Test
-  public void whenGetAllPendingOrdersOrderedByStatusAndCreatedAt_thenReturnProduct() {
+  void whenGetAllPendingOrdersOrderedByStatusAndCreatedAt_thenReturnProduct() {
     Order order = getOrderDTO().toNewOrder();
     when(orderRepository.getAllOrdersOrderedByStatusAndCreatedAt()).thenReturn(singletonList(order));
 
@@ -61,13 +61,13 @@ public class OrderUseCaseImplTest {
   }
 
   @Test
-  public void givenOrderToBeCreated_whenCreateFails_ThenError() {
+  void givenOrderToBeCreated_whenCreateFails_ThenError() {
     assertThrows(InvalidOrderException.class,
             () -> orderUseCase.createOrder(getInvalidOrderDTO()));
   }
 
   @Test
-  public void givenId_whenReceiveOrder_thenChangeStatusAndPaymentApproved() {
+  void givenId_whenReceiveOrder_thenChangeStatusAndPaymentApproved() {
     Order order = getOrderDTO(CREATED).toNewOrder();
     when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
@@ -78,7 +78,7 @@ public class OrderUseCaseImplTest {
   }
 
   @Test
-  public void givenId_whenOrderInPreparation_thenUpdateOrder() {
+  void givenId_whenOrderInPreparation_thenUpdateOrder() {
     Order order = getOrderDTO(CREATED).toNewOrder();
     when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
@@ -88,7 +88,7 @@ public class OrderUseCaseImplTest {
   }
 
   @Test
-  public void givenId_whenOrderReady_thenUpdateOrder() {
+  void givenId_whenOrderReady_thenUpdateOrder() {
     Order order = getOrderDTO(CREATED).toNewOrder();
     when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
@@ -98,7 +98,7 @@ public class OrderUseCaseImplTest {
   }
 
   @Test
-  public void givenId_whenOrderFinished_thenUpdateOrder() {
+  void givenId_whenOrderFinished_thenUpdateOrder() {
     Order order = getOrderDTO(CREATED).toNewOrder();
     when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
@@ -108,7 +108,7 @@ public class OrderUseCaseImplTest {
   }
 
   @Test
-  public void givenId_whenOrderCanceled_thenUpdateOrder() {
+  void givenId_whenOrderCanceled_thenUpdateOrder() {
     Order order = getOrderDTO(CREATED).toNewOrder();
     when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
@@ -118,7 +118,7 @@ public class OrderUseCaseImplTest {
   }
 
   @Test
-  public void whenGetOrdersByStatus_thenReturnProduct() {
+  void whenGetOrdersByStatus_thenReturnProduct() {
     Order order = getOrderDTO().toNewOrder();
     when(orderRepository.getOrdersByStatus(CREATED)).thenReturn(singletonList(order));
 

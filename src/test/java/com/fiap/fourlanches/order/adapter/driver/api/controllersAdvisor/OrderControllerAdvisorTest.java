@@ -7,17 +7,17 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderControllerAdvisorTest {
+class OrderControllerAdvisorTest {
 
   private OrderControllerAdvisor orderControllerAdvisor;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     orderControllerAdvisor = new OrderControllerAdvisor();
   }
 
   @Test
-  public void shouldHandleInternalServerErrorException() {
+  void shouldHandleInternalServerErrorException() {
     var expectedErrorMessage = new ApiErrorMessage(HttpStatus.NOT_FOUND, "Order not found");
 
     ResponseEntity<ApiErrorMessage> response = orderControllerAdvisor.handleOrderNotFoundException();
@@ -27,7 +27,7 @@ public class OrderControllerAdvisorTest {
   }
 
   @Test
-  public void shouldHandleInvalidOrderException() {
+  void shouldHandleInvalidOrderException() {
     var expectedErrorMessage = new ApiErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, "Order could not be processed");
 
     ResponseEntity<ApiErrorMessage> response = orderControllerAdvisor.handleInvalidOrderException();
@@ -37,7 +37,7 @@ public class OrderControllerAdvisorTest {
   }
 
   @Test
-  public void shouldHandleIncorrectOrderStatusException() {
+  void shouldHandleIncorrectOrderStatusException() {
     var expectedErrorMessage = new ApiErrorMessage(HttpStatus.BAD_REQUEST, "Order could not be updated");
 
     ResponseEntity<ApiErrorMessage> response = orderControllerAdvisor.handleIncorrectOrderStatusException();

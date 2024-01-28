@@ -9,46 +9,46 @@ import static com.fiap.fourlanches.order.domain.AssertionConcern.isNotEmpty;
 import static com.fiap.fourlanches.order.domain.AssertionConcern.isPositive;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class AssertionConcernTest {
+class AssertionConcernTest {
 
   @Test
-  public void shouldReturnIsNotEmptyAsTrueWhenStringIsFourlanches() {
+  void shouldReturnIsNotEmptyAsTrueWhenStringIsFourlanches() {
     boolean expected = isNotEmpty("Fourlanches");
     assertThat(expected).isTrue();
   }
 
   @Test
-  public void shouldReturnIsNotEmptyAsFalseWhenStringIsNull() {
+  void shouldReturnIsNotEmptyAsFalseWhenStringIsNull() {
     boolean expected = isNotEmpty(null);
     assertThat(expected).isFalse();
   }
 
   @Test
-  public void shouldReturnIsNotEmptyAsFalseWhenStringIsEmpty() {
+  void shouldReturnIsNotEmptyAsFalseWhenStringIsEmpty() {
     boolean expected = isNotEmpty("");
     assertThat(expected).isFalse();
   }
 
   @Test
-  public void shouldReturnIsPositiveAsTrueWhenValueIsTen() {
+  void shouldReturnIsPositiveAsTrueWhenValueIsTen() {
     boolean expected = isPositive(new BigDecimal("10"));
     assertThat(expected).isTrue();
   }
 
   @Test
-  public void shouldReturnIsPositiveAsFalseWhenValueIsNull() {
+  void shouldReturnIsPositiveAsFalseWhenValueIsNull() {
     boolean expected = isPositive(null);
     assertThat(expected).isFalse();
   }
 
   @Test
-  public void shouldReturnIsPositiveAsFalseWhenValueIsNegtive() {
+  void shouldReturnIsPositiveAsFalseWhenValueIsNegtive() {
     boolean expected = isPositive(new BigDecimal("-10"));
     assertThat(expected).isFalse();
   }
 
   @Test
-  public void shouldReturnIsPositiveAsFalseWhenValueIsZero() {
+  void shouldReturnIsPositiveAsFalseWhenValueIsZero() {
     boolean expected = isPositive(new BigDecimal("0"));
     assertThat(expected).isFalse();
   }

@@ -10,10 +10,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class OrderTest {
+class OrderTest {
 
   @Test
-  public void shouldReturnHundredAsTotalPriceWhenPriceIsTenAndQuantityIsTen() {
+  void shouldReturnHundredAsTotalPriceWhenPriceIsTenAndQuantityIsTen() {
     Order order = Order.builder()
             .orderItems(singletonList(OrderItem.builder()
                     .price(10)
@@ -25,7 +25,7 @@ public class OrderTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenOrderItemsIsEmptyAndStatusIsNotNull() {
+  void shouldReturnIsValidAsFalseWhenOrderItemsIsEmptyAndStatusIsNotNull() {
     Order order = Order.builder().orderItems(emptyList())
             .status(OrderStatus.CREATED)
             .build();
@@ -34,7 +34,7 @@ public class OrderTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsFalseWhenOrderItemsIsNotEmptyAndStatusIsNull() {
+  void shouldReturnIsValidAsFalseWhenOrderItemsIsNotEmptyAndStatusIsNull() {
     Order order = Order.builder().orderItems(singletonList(OrderItem.builder()
             .build())).build();
 
@@ -42,7 +42,7 @@ public class OrderTest {
   }
 
   @Test
-  public void shouldReturnIsValidAsTrueWhenOrderItemsIsNotEmpty() {
+  void shouldReturnIsValidAsTrueWhenOrderItemsIsNotEmpty() {
     Order order = Order.builder()
             .status(OrderStatus.CREATED)
             .orderItems(singletonList(OrderItem.builder().build())).build();

@@ -49,7 +49,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 class ProductControllerTest {
 
-  public static final long PRODUCT_ID = 1234L;
+  private static final long PRODUCT_ID = 1234L;
+
   @Autowired
   private MockMvc mvc;
 
@@ -69,7 +70,7 @@ class ProductControllerTest {
   private JacksonTester<ApiErrorMessage> jsonApiErrorMessage;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     this.mvc = MockMvcBuilders
             .standaloneSetup(productController)
             .setControllerAdvice(new ProductControllerAdvisor())
@@ -77,7 +78,7 @@ class ProductControllerTest {
   }
 
   @Test
-  public void givenId_whenProductIsFound_ThenReturnProduct() throws Exception {
+  void givenId_whenProductIsFound_ThenReturnProduct() throws Exception {
     when(productUseCase.getProductById(PRODUCT_ID)).thenReturn(getDefaultProduct());
 
     MockHttpServletResponse response = mvc.perform(get("/products/" + PRODUCT_ID)
@@ -88,7 +89,7 @@ class ProductControllerTest {
   }
 
   @Test
-  public void whenProductsAreFound_ThenReturnProducts() throws Exception {
+  void whenProductsAreFound_ThenReturnProducts() throws Exception {
     var expected = singletonList(getDefaultProduct());
     when(productUseCase.getProducts()).thenReturn(expected);
 
@@ -101,7 +102,7 @@ class ProductControllerTest {
   }
 
   @Test
-  public void givenCategory_whenProductsWithSameCategoryAreFound_ThenReturnProducts() throws Exception {
+  void givenCategory_whenProductsWithSameCategoryAreFound_ThenReturnProducts() throws Exception {
     var expected = singletonList(getDefaultProduct());
     when(productUseCase.getProductsByCategory(eq(DRINK))).thenReturn(expected);
 
@@ -114,7 +115,7 @@ class ProductControllerTest {
   }
 
   @Test
-  public void givenProductToBeSaved_whenSaveIsSuccessful_ThenReturnProduct() throws Exception {
+  void givenProductToBeSaved_whenSaveIsSuccessful_ThenReturnProduct() throws Exception {
     ProductDTO productDTO = getProductDTO();
     when(productUseCase.createProduct(productDTO)).thenReturn(PRODUCT_ID);
 
@@ -126,7 +127,7 @@ class ProductControllerTest {
   }
 
   @Test
-  public void givenId_whenUpdateProduct_ThenVerifyUpdateIsCalled() throws Exception {
+  void givenId_whenUpdateProduct_ThenVerifyUpdateIsCalled() throws Exception {
     ProductDTO productDTO = getProductDTO();
 
     var response = mvc.perform(put("/products/" + PRODUCT_ID).contentType(MediaType.APPLICATION_JSON)
@@ -137,7 +138,7 @@ class ProductControllerTest {
   }
 
   @Test
-  public void givenId_whenDeleteProduct_ThenVerifyDeleteIsCalled() throws Exception {
+  void givenId_whenDeleteProduct_ThenVerifyDeleteIsCalled() throws Exception {
     MockHttpServletResponse response = mvc.perform(delete("/products/" + PRODUCT_ID)
             .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 

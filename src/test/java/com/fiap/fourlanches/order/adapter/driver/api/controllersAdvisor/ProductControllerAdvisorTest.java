@@ -7,17 +7,17 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProductControllerAdvisorTest {
+class ProductControllerAdvisorTest {
 
   private ProductControllerAdvisor productControllerAdvisor;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     productControllerAdvisor = new ProductControllerAdvisor();
   }
 
   @Test
-  public void shouldHandleInternalServerErrorException() {
+  void shouldHandleInternalServerErrorException() {
     var expectedErrorMessage = new ApiErrorMessage(HttpStatus.NOT_FOUND, "Product not found");
 
     ResponseEntity<ApiErrorMessage> response = productControllerAdvisor.handleProductNotFoundException();
@@ -27,7 +27,7 @@ public class ProductControllerAdvisorTest {
   }
 
   @Test
-  public void shouldHandleInvalidOrderException() {
+  void shouldHandleInvalidOrderException() {
     var expectedErrorMessage = new ApiErrorMessage(HttpStatus.BAD_REQUEST, "Invalid product");
 
     ResponseEntity<ApiErrorMessage> response = productControllerAdvisor.handleInvalidProductException();
