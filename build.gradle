@@ -16,24 +16,19 @@ java {
 }
 
 sonar {
-  properties {
-    property "sonar.projectKey", "fiap-four-lanches_fourlanches.order.app"
-    property "sonar.organization", "fiap-four-lanches"
-    property "sonar.host.url", "https://sonarcloud.io"
+	properties {
+		property "sonar.projectKey", "fiap-four-lanches_fourlanches.order.app"
+		property "sonar.organization", "fiap-four-lanches"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/*.xml"
+		property "sonar.java.coveragePlugin", "jacoco"
+		property "sonar.coverage.exclusions", coverageExclusions
   }
 }
 
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
-	}
-}
-
-sonar {
-	properties {
-		property "sonar.projectKey", "fiap-four-lanches_fourlanches.order.app"
-		property "sonar.organization", "fiap-four-lanches"
-		property "sonar.host.url", "https://sonarcloud.io"
 	}
 }
 
@@ -70,6 +65,11 @@ test {
 jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
 
+	reports {
+		xml.enabled true // a flag anteriormente era false
+		html.destination file("${buildDir}/jacocoHtml")
+	}
+
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
@@ -80,5 +80,22 @@ jacocoTestReport {
 					"com/fiap/**/FourLanchesApplication*"
 			])
 		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				// enabled = false
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.8
+			}
+		}
+	}
+
+	afterEvaluate {
+		excludeFiles(classDirectories)
 	}
 }
