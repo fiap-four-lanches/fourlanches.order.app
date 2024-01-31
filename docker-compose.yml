@@ -1,6 +1,8 @@
 version: '3'
 services:
   db:
+    env_file:
+      - .env
     container_name: db
     image: postgres
     environment:
@@ -11,6 +13,8 @@ services:
     ports:
       - "5432:5432"
   app:
+    env_file:
+      - .env
     image: fourlanches
     build:
       context: .
@@ -26,6 +30,8 @@ services:
     ports:
       - "8080:8080"
   migration:
+    env_file:
+      - .env
     container_name: migration
     image: flyway/flyway
     environment:

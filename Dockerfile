@@ -18,7 +18,7 @@ RUN gradle clean build
 
 # App container
 FROM eclipse-temurin:17-jdk-jammy
-ENV ARTIFACT_NAME=fourlanches-0.0.1-SNAPSHOT.jar
+ENV ARTIFACT_NAME=fourlanches-order-app-0.0.1-SNAPSHOT.jar
 ENV APP_HOME=/usr/app
 
 WORKDIR $APP_HOME/
