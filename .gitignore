@@ -37,9 +37,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### ENV Files ###
-*.env
-
 ### DB files ###
 data/
 
