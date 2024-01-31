@@ -10,7 +10,9 @@ plugins {
 
 group = 'com.fiap.techchallenge.fourlanches'
 version = '0.0.1-SNAPSHOT'
-
+springBoot {
+    mainClass = 'com.fiap.techchallenge.fourlanches.order.FourLanchesApplication'
+}
 java {
 	sourceCompatibility = '17'
 }
@@ -64,10 +66,10 @@ test {
 jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
 
-	reports {
-		xml.enabled true // a flag anteriormente era false
-		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-	}
+    reports {
+        xml.required = true
+        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    }
 
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
