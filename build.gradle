@@ -10,9 +10,7 @@ plugins {
 
 group = 'com.fiap.techchallenge.fourlanches'
 version = '0.0.1-SNAPSHOT'
-springBoot {
-    mainClass = 'com.fiap.techchallenge.fourlanches.order.FourLanchesApplication'
-}
+
 java {
 	sourceCompatibility = '17'
 }
