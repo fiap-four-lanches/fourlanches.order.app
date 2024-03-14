@@ -17,21 +17,25 @@
 * Kubernetes - K8S
 
 ### 3. Para executar localmente com Docker
-#### 3.1. Para buildar, executar as migration e rodar o app no docker pela primeira vez
+#### 3.1. Necessário um arquivo .env na raiz do projeto com a seguinte conteúdo:
 
-`docker compose up --build -d`
+Para executar localmente com o docker é necessário fazer uma cópia do arquivo .env.example, renomear a
+cópia para .env e configurar as variavéis de acordo com o ambiente.
 
-#### 3.2. Para executar o app com docker após a primeira vez
-Após rodar a primeira o comando acima, execute o seguinte comando abaixo para que apenas execute 
-os containers sem a etapa de build e migration.
-
-`docker compose up -d app db`
-
-#### 3.3. Necessário um arquivo .env na raiz do projeto com a seguinte conteúdo:
 ```
 DATABASE_USERNAME=username_do_banco  
 DATABASE_PASSWORD=password_do_banco
 ```
+
+#### 3.2. Para buildar, executar as migration e rodar o app no docker pela primeira vez
+
+`docker compose up --build -d`
+
+#### 3.3. Para executar o app com docker após a primeira vez
+Após rodar a primeira o comando acima, execute o seguinte comando abaixo para que apenas execute 
+os containers sem a etapa de build e migration.
+
+`docker compose up -d app db`
 
 ### 4. Para rodar com K8S
 
@@ -64,7 +68,12 @@ kubectl apply -f k8s/app/fourlanches-secrets.yml
 
 kubectl apply -f k8s/migration/flyway-job.yml 
 ```
-#### 4.3. Subindo a aplicação
+
+#### 4.3. Subindo o rabbitmq
+
+[//]: # (TODO)
+
+#### 4.4. Subindo a aplicação
 Agora com o postgres executando e com as tabelas criadas, basta executar os comandos abaixo:
 ```
 kubectl apply -f k8s/app/fourlanches-configmap.yml 

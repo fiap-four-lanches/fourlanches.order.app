@@ -7,6 +7,7 @@ import com.fiap.fourlanches.order.domain.repositories.OrderRepository;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

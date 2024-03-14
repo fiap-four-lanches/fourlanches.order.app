@@ -63,4 +63,17 @@ public class OrderJpaEntity {
                         .map(orderItem -> fromOrderItem(orderItem, orderJpaEntity)).toList());
         return orderJpaEntity;
     }
+
+    @Override
+    public String toString() {
+        return "OrderJpaEntity{" +
+                "id=" + id +
+//                ", orderItems=" + orderItems +
+                ", customerId=" + customerId +
+                ", totalPrice=" + totalPrice +
+                ", createdAt=" + createdAt +
+                ", status='" + status + '\'' +
+                ", paymentApproved=" + paymentApproved +
+                '}';
+    }
 }

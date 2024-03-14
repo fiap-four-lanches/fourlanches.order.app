@@ -1,5 +1,6 @@
 package com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor;
 
+import com.fiap.fourlanches.order.application.exception.FailPublishToQueueException;
 import com.fiap.fourlanches.order.application.exception.IncorrectOrderStatusException;
 import com.fiap.fourlanches.order.domain.exception.InvalidOrderException;
 import com.fiap.fourlanches.order.domain.exception.OrderNotFoundException;
@@ -30,6 +31,13 @@ public class OrderControllerAdvisor extends GeneralControllerAdvisor {
         var errorMessage = new ApiErrorMessage(HttpStatus.BAD_REQUEST, "Order could not be updated");
 
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FailPublishToQueueException.class)
+    public ResponseEntity<ApiErrorMessage> handleFailPublishToQueueException() {
+        var errorMessage = new ApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Fail to publish message to queue");
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

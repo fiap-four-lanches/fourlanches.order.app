@@ -11,16 +11,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.fiap.fourlanches.order.application.constants.HeaderConstant.X_REQUEST_ID;
 
 @RestController
 @AllArgsConstructor
@@ -38,8 +36,11 @@ public class OrderController {
 
     @PostMapping(value = "", produces = "application/json")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createOrder(@RequestBody OrderDTO orderDTO) throws InvalidOrderException {
-        Long orderId = orderUseCase.createOrder(orderDTO);
+    public ResponseEntity<Long> createOrder(@RequestHeader(X_REQUEST_ID) String xRequestId,
+                                            @RequestBody OrderDTO orderDTO) throws InvalidOrderException {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(X_REQUEST_ID, xRequestId);
+        Long orderId = orderUseCase.createOrder(orderDTO, headers);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
     }
 

@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,133 +27,136 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = TestConfiguration.class)
 class OrderUseCaseImplTest {
 
-  private static final long ORDER_ID = 1234L;
-  private static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(20.0);
-  private static final Long CUSTOMER_ID = 5678L;
+    private static final long ORDER_ID = 1234L;
+    private static final BigDecimal TOTAL_PRICE = BigDecimal.valueOf(20.0);
+    private static final Long CUSTOMER_ID = 5678L;
 
-  @Mock
-  private OrderRepository orderRepository;
+    @Mock
+    private OrderRepository orderRepository;
 
-  @Mock
-  private ValidateOrderStatusUseCase validateOrderStatusUseCase;
+    @Mock
+    private ValidateOrderStatusUseCase validateOrderStatusUseCase;
 
-  @Mock
-  private ProductUseCase productUseCase;
+    @Mock
+    private ProductUseCase productUseCase;
 
-  private OrderUseCase orderUseCase;
+    @Mock
+    private AmqpTemplate queueSender;
 
-  @BeforeEach
-  void setUp() {
-    orderUseCase = new OrderUseCaseImpl(orderRepository, validateOrderStatusUseCase, productUseCase);
-  }
+    private OrderUseCase orderUseCase;
 
-  @Test
-  void whenGetAllPendingOrdersOrderedByStatusAndCreatedAt_thenReturnProduct() {
-    Order order = getOrderDTO().toNewOrder();
-    when(orderRepository.getAllOrdersOrderedByStatusAndCreatedAt()).thenReturn(singletonList(order));
+    @BeforeEach
+    void setUp() {
+        orderUseCase = new OrderUseCaseImpl(orderRepository, validateOrderStatusUseCase, productUseCase, queueSender);
+    }
 
-    List<Order> orders = orderUseCase.getAllPendingOrdersOrderedByStatusAndCreatedAt();
+    @Test
+    void whenGetAllPendingOrdersOrderedByStatusAndCreatedAt_thenReturnProduct() {
+        Order order = getOrderDTO().toNewOrder();
+        when(orderRepository.getAllOrdersOrderedByStatusAndCreatedAt()).thenReturn(singletonList(order));
 
-    assertThat(orders).contains(order);
-  }
+        List<Order> orders = orderUseCase.getAllPendingOrdersOrderedByStatusAndCreatedAt();
 
-  @Test
-  void givenOrderToBeCreated_whenCreateFails_ThenError() {
-    assertThrows(InvalidOrderException.class,
-            () -> orderUseCase.createOrder(getInvalidOrderDTO()));
-  }
+        assertThat(orders).contains(order);
+    }
 
-  @Test
-  void givenId_whenReceiveOrder_thenChangeStatusAndPaymentApproved() {
-    Order order = getOrderDTO(CREATED).toNewOrder();
-    when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
+    @Test
+    void givenOrderToBeCreated_whenCreateFails_ThenError() {
+        assertThrows(InvalidOrderException.class,
+                () -> orderUseCase.createOrder(getInvalidOrderDTO(), null));
+    }
 
-    orderUseCase.receiveOrder(ORDER_ID, true);
+    @Test
+    void givenId_whenReceiveOrder_thenChangeStatusAndPaymentApproved() {
+        Order order = getOrderDTO(CREATED).toNewOrder();
+        when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
-    order.setPaymentApproved(true);
-    verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
-  }
+        orderUseCase.receiveOrder(ORDER_ID, true);
 
-  @Test
-  void givenId_whenOrderInPreparation_thenUpdateOrder() {
-    Order order = getOrderDTO(CREATED).toNewOrder();
-    when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
+        order.setPaymentApproved(true);
+        verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
+    }
 
-    orderUseCase.orderInPreparation(ORDER_ID);
+    @Test
+    void givenId_whenOrderInPreparation_thenUpdateOrder() {
+        Order order = getOrderDTO(CREATED).toNewOrder();
+        when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
-    verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
-  }
+        orderUseCase.orderInPreparation(ORDER_ID);
 
-  @Test
-  void givenId_whenOrderReady_thenUpdateOrder() {
-    Order order = getOrderDTO(CREATED).toNewOrder();
-    when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
+        verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
+    }
 
-    orderUseCase.orderReady(ORDER_ID);
+    @Test
+    void givenId_whenOrderReady_thenUpdateOrder() {
+        Order order = getOrderDTO(CREATED).toNewOrder();
+        when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
-    verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
-  }
+        orderUseCase.orderReady(ORDER_ID);
 
-  @Test
-  void givenId_whenOrderFinished_thenUpdateOrder() {
-    Order order = getOrderDTO(CREATED).toNewOrder();
-    when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
+        verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
+    }
 
-    orderUseCase.orderFinished(ORDER_ID);
+    @Test
+    void givenId_whenOrderFinished_thenUpdateOrder() {
+        Order order = getOrderDTO(CREATED).toNewOrder();
+        when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
-    verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
-  }
+        orderUseCase.orderFinished(ORDER_ID);
 
-  @Test
-  void givenId_whenOrderCanceled_thenUpdateOrder() {
-    Order order = getOrderDTO(CREATED).toNewOrder();
-    when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
+        verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
+    }
 
-    orderUseCase.orderCanceled(ORDER_ID);
+    @Test
+    void givenId_whenOrderCanceled_thenUpdateOrder() {
+        Order order = getOrderDTO(CREATED).toNewOrder();
+        when(orderRepository.getById(eq(ORDER_ID))).thenReturn(order);
 
-    verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
-  }
+        orderUseCase.orderCanceled(ORDER_ID);
 
-  @Test
-  void whenGetOrdersByStatus_thenReturnProduct() {
-    Order order = getOrderDTO().toNewOrder();
-    when(orderRepository.getOrdersByStatus(CREATED)).thenReturn(singletonList(order));
+        verify(orderRepository).updateOrder(eq(ORDER_ID), eq(order));
+    }
 
-    List<Order> orders = orderUseCase.getOrdersByStatus(CREATED);
+    @Test
+    void whenGetOrdersByStatus_thenReturnProduct() {
+        Order order = getOrderDTO().toNewOrder();
+        when(orderRepository.getOrdersByStatus(CREATED)).thenReturn(singletonList(order));
 
-    assertThat(orders).contains(order);
-  }
+        List<Order> orders = orderUseCase.getOrdersByStatus(CREATED);
 
-  private static OrderDTO getOrderDTO() {
-    return getOrderDTO(CREATED);
-  }
+        assertThat(orders).contains(order);
+    }
 
-  private static OrderDTO getOrderDTO(OrderStatus status) {
-    return OrderDTO.builder()
-            .orderItems(singletonList(OrderItem.builder()
-                    .productId(ORDER_ID)
-                    .quantity(10)
-                    .price(2.0)
-                    .build()))
-            .customerId(CUSTOMER_ID)
-            .totalPrice(TOTAL_PRICE)
-            .status(status)
-            .paymentApproved(false)
-            .build();
-  }
+    private static OrderDTO getOrderDTO() {
+        return getOrderDTO(CREATED);
+    }
 
-  private OrderDTO getInvalidOrderDTO() {
-    return OrderDTO.builder()
-            .orderItems(emptyList())
-            .customerId(CUSTOMER_ID)
-            .paymentApproved(false)
-            .build();
-  }
+    private static OrderDTO getOrderDTO(OrderStatus status) {
+        return OrderDTO.builder()
+                .orderItems(singletonList(OrderItem.builder()
+                        .productId(ORDER_ID)
+                        .quantity(10)
+                        .price(2.0)
+                        .build()))
+                .customerId(CUSTOMER_ID)
+                .totalPrice(TOTAL_PRICE)
+                .status(status)
+                .paymentApproved(false)
+                .build();
+    }
+
+    private OrderDTO getInvalidOrderDTO() {
+        return OrderDTO.builder()
+                .orderItems(emptyList())
+                .customerId(CUSTOMER_ID)
+                .paymentApproved(false)
+                .build();
+    }
 
 }
