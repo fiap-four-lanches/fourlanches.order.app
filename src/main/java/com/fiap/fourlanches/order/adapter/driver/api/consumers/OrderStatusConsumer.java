@@ -34,8 +34,6 @@ public class OrderStatusConsumer {
 
     private static final String PUBLISH_ERR_MSG = "failed to publish message to queue";
 
-    private static final String ORDER_STATUS_EXCHANGE = "order.status";
-
     private static final String ORDER_STATUS_UPDATE_KEY = "order.status.update";
 
 
@@ -45,15 +43,15 @@ public class OrderStatusConsumer {
     @Autowired
     private AmqpTemplate queueSender;
 
-    @Value("${queue.payment.name}")
-    String QUEUE_PAYMENT_STATUS_NAME;
+    @Value("${queue.payment.cancel.name}")
+    String QUEUE_PAYMENT_CANCEL_NAME;
 
     @Value("${queue.kitchen.name}")
-    String QUEUE_KITCHEN_STATUS_NAME;
+    String QUEUE_KITCHEN_NAME;
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${queue.order.status.name}"),
-            exchange = @Exchange(value = ORDER_STATUS_EXCHANGE, type = "topic"),
+            exchange = @Exchange(value = "${queue.exchange}", type = "topic"),
             key = ORDER_STATUS_UPDATE_KEY)
     )
     public void receiveMessageOrderStatus(@Payload String message,
@@ -132,7 +130,7 @@ public class OrderStatusConsumer {
             var objectMapper = new ObjectMapper();
             var paymentMessageJson = objectMapper.writeValueAsString(orderMessage);
             var message = new Message(paymentMessageJson.getBytes(), messageProperties);
-            queueSender.convertAndSend(QUEUE_PAYMENT_STATUS_NAME, message);
+            queueSender.convertAndSend(QUEUE_PAYMENT_CANCEL_NAME, message);
         } catch (JsonProcessingException e) {
             log.error(PAYMENT_JSON_ERR_MSG, e);
             throw new FailPublishToQueueException(PAYMENT_JSON_ERR_MSG, e);
@@ -149,7 +147,7 @@ public class OrderStatusConsumer {
             var objectMapper = new ObjectMapper();
             var paymentMessageJson = objectMapper.writeValueAsString(orderMessage);
             var message = new Message(paymentMessageJson.getBytes(), messageProperties);
-            queueSender.convertAndSend(QUEUE_KITCHEN_STATUS_NAME, message);
+            queueSender.convertAndSend(QUEUE_KITCHEN_NAME, message);
         } catch (JsonProcessingException e) {
             log.error(PAYMENT_JSON_ERR_MSG, e);
             throw new FailPublishToQueueException(PAYMENT_JSON_ERR_MSG, e);

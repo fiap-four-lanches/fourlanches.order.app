@@ -46,9 +46,11 @@ public class OrderController {
 
     private static final String CANCELLATION_ERR_MSG = "failed to publish cancellation message to queue";
 
-    private static String QUEUE_PAYMENT_STATUS_NAME;
+    private static String QUEUE_PAYMENT_NAME;
 
-    private static String QUEUE_KITCHEN_STATUS_NAME;
+    private static String QUEUE_PAYMENT_CANCEL_NAME;
+
+    private static String QUEUE_KITCHEN_CANCEL_NAME;
 
     private OrderUseCase orderUseCase;
 
@@ -56,12 +58,17 @@ public class OrderController {
 
     @Value("${queue.payment.name}")
     public void setQueuePaymentsName(String value) {
-        QUEUE_PAYMENT_STATUS_NAME = value;
+        QUEUE_PAYMENT_NAME = value;
     }
 
-    @Value("${queue.kitchen.name}")
-    public void setQueueKitchenName(String value) {
-        QUEUE_KITCHEN_STATUS_NAME = value;
+    @Value("${queue.payment.cancel.name}")
+    public void setQueuePaymentsCancelName(String value) {
+        QUEUE_PAYMENT_CANCEL_NAME = value;
+    }
+
+    @Value("${queue.kitchen.cancel.name}")
+    public void setQueueKitchenCancelName(String value) {
+        QUEUE_KITCHEN_CANCEL_NAME = value;
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -86,7 +93,7 @@ public class OrderController {
             var objectMapper = new ObjectMapper();
             var paymentMessageJson = objectMapper.writeValueAsString(paymentMessage);
             var message = new Message(paymentMessageJson.getBytes(), messageProperties);
-            queueSender.convertAndSend(QUEUE_PAYMENT_STATUS_NAME, message);
+            queueSender.convertAndSend(QUEUE_PAYMENT_NAME, message);
         } catch (JsonProcessingException e) {
             log.error(PAYMENT_JSON_ERR_MSG, e);
             throw new FailPublishToQueueException(PAYMENT_JSON_ERR_MSG, e);
@@ -137,8 +144,8 @@ public class OrderController {
             var objectMapper = new ObjectMapper();
             var paymentMessageJson = objectMapper.writeValueAsString(orderStatusMessage);
             var message = new Message(paymentMessageJson.getBytes(), messageProperties);
-            queueSender.convertAndSend(QUEUE_PAYMENT_STATUS_NAME, message);
-            queueSender.convertAndSend(QUEUE_KITCHEN_STATUS_NAME, message);
+            queueSender.convertAndSend(QUEUE_PAYMENT_CANCEL_NAME, message);
+            queueSender.convertAndSend(QUEUE_KITCHEN_CANCEL_NAME, message);
         } catch (JsonProcessingException e) {
             log.error(CANCELLATION_JSON_ERR_MSG, e);
             throw new FailPublishToQueueException(CANCELLATION_JSON_ERR_MSG, e);
