@@ -35,7 +35,14 @@ DATABASE_PASSWORD=password_do_banco
 Após rodar a primeira o comando acima, execute o seguinte comando abaixo para que apenas execute 
 os containers sem a etapa de build e migration.
 
-`docker compose up -d app db`
+`docker compose up -d app db rabbitmq`
+
+#### 3.4. Preparando o RabbitMQ
+Após subir todos os containeres necessários, é preciso realizar os seguintes passos:
+1. Acessar o rabbitmq no `localhost:15672` (configuração padrão) com  usários e senha configurados no arquivo `.env.`
+2. Após logado é necessário criar as 3 filas e o exchange, usando os mesmos  valores das variaveis usadas no arquivo `.env`
+3. E por final, deve ser criado os bindings no exchange criado anteriormente
+   * Os binds criados devem: ser vazio (bind default) e um com o seguinte valor: `order.status.update`
 
 ### 4. Para rodar com K8S
 

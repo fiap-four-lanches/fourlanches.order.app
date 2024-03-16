@@ -1,5 +1,6 @@
 package com.fiap.fourlanches.order.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fiap.fourlanches.order.domain.entities.Order;
@@ -22,8 +23,10 @@ public class KitchenProductionQueueMessageDTO {
     private Long orderId;
     private List<OrderItem> orderItems;
     private OrderStatus status;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updatedAt;
 
