@@ -77,16 +77,15 @@ jacocoTestReport {
 					"com/fiap/**/application/dto/**.*",
 					"com/fiap/**/SpringJpaConfig*",
 					"com/fiap/**/RabbitMQConfig*",
-					"com/fiap/**/FailPublishToQueueException*",
 					"com/fiap/**/*Exception*",
-					"com/fiap/**/OrderStatusConsumer*",
 					"com/fiap/**/InternalServerError*",
-					"com/fiap/**/FourLanchesApplication*",
+					"com/fiap/**/FailPublishToQueueException*",
 					"com/fiap/**/HeaderConstant*",
 					"com/fiap/**/KitchenProductionQueueMessageDTO*",
 					"com/fiap/**/OrderControllerAdvisor*",
 					"com/fiap/**/OrderStatusQueueMessageDTO*",
 					"com/fiap/**/PaymentQueueMessageDTO*",
+					"com/fiap/**/FourLanchesApplication*"
 			])
 		}))
 	}
