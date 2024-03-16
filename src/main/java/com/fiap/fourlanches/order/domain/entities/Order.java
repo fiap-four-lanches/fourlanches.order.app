@@ -28,6 +28,7 @@ public class Order {
     private BigDecimal totalPrice;
     private OrderStatus status;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private Boolean paymentApproved;
 
     @JsonIgnore

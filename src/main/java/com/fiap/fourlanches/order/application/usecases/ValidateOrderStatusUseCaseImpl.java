@@ -77,6 +77,7 @@ public class ValidateOrderStatusUseCaseImpl implements ValidateOrderStatusUseCas
     }
 
     private boolean isNextStatusPossible(OrderStatus oldStatus, OrderStatus newStatus) {
+        log.info("oldStatus: {}, newStatus {}", oldStatus, newStatus);
         return nextStatuses.get(oldStatus).contains(newStatus);
     }
 

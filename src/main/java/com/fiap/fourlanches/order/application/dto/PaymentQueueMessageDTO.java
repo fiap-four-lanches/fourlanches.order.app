@@ -14,19 +14,18 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentQueueMessageDTO {
-    private Long orderId;
     private Long customerId;
-    private BigDecimal totalPrice;
-    private OrderStatus status;
-    private Boolean paymentApproved;
+    private PaymentOrderResumeDTO order;
 
     public static PaymentQueueMessageDTO fromOrder(Order order) {
-        return PaymentQueueMessageDTO.builder()
-                .orderId(order.getId())
-                .customerId(order.getCustomerId())
+        var orderResume = PaymentOrderResumeDTO.builder()
+                .id(order.getId())
+                .description("")
                 .totalPrice(order.getTotalPrice())
-                .status(order.getStatus())
-                .paymentApproved(order.getPaymentApproved())
+                .build();
+        return PaymentQueueMessageDTO.builder()
+                .customerId(order.getCustomerId())
+                .order(orderResume)
                 .build();
     }
 }

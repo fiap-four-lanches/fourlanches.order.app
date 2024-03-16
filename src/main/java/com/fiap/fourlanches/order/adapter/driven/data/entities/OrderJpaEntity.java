@@ -3,10 +3,7 @@ package com.fiap.fourlanches.order.adapter.driven.data.entities;
 import com.fiap.fourlanches.order.domain.entities.Order;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,6 +31,9 @@ public class OrderJpaEntity {
     private BigDecimal totalPrice;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @EqualsAndHashCode.Exclude
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     private String status;
     @Column(name = "payment_approved")
     private Boolean paymentApproved;
@@ -42,10 +42,11 @@ public class OrderJpaEntity {
         return Order.builder()
                 .id(id)
                 .totalPrice(totalPrice)
-                .status(OrderStatus.valueOf(status))
+                .status(OrderStatus.fromString(status))
                 .orderItems(orderItems.stream().map(OrderItemJpaEntity::toOrderItem).toList())
                 .customerId(customerId)
                 .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .paymentApproved(paymentApproved)
                 .build();
     }
@@ -60,20 +61,7 @@ public class OrderJpaEntity {
                 .build();
 
         orderJpaEntity.setOrderItems(order.getOrderItems().stream()
-                        .map(orderItem -> fromOrderItem(orderItem, orderJpaEntity)).toList());
+                .map(orderItem -> fromOrderItem(orderItem, orderJpaEntity)).toList());
         return orderJpaEntity;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderJpaEntity{" +
-                "id=" + id +
-//                ", orderItems=" + orderItems +
-                ", customerId=" + customerId +
-                ", totalPrice=" + totalPrice +
-                ", createdAt=" + createdAt +
-                ", status='" + status + '\'' +
-                ", paymentApproved=" + paymentApproved +
-                '}';
     }
 }

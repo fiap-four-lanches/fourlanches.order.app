@@ -46,14 +46,11 @@ class OrderUseCaseImplTest {
     @Mock
     private ProductUseCase productUseCase;
 
-    @Mock
-    private AmqpTemplate queueSender;
-
     private OrderUseCase orderUseCase;
 
     @BeforeEach
     void setUp() {
-        orderUseCase = new OrderUseCaseImpl(orderRepository, validateOrderStatusUseCase, productUseCase, queueSender);
+        orderUseCase = new OrderUseCaseImpl(orderRepository, validateOrderStatusUseCase, productUseCase);
     }
 
     @Test
@@ -69,7 +66,7 @@ class OrderUseCaseImplTest {
     @Test
     void givenOrderToBeCreated_whenCreateFails_ThenError() {
         assertThrows(InvalidOrderException.class,
-                () -> orderUseCase.createOrder(getInvalidOrderDTO(), null));
+                () -> orderUseCase.createOrder(getInvalidOrderDTO()));
     }
 
     @Test

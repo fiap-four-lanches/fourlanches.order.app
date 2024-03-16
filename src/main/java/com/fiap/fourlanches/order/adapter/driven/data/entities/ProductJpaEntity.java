@@ -34,7 +34,7 @@ public class ProductJpaEntity {
                 .id(id)
                 .name(name)
                 .description(description)
-                .category(Category.valueOf(category))
+                .category(Category.fromString(category))
                 .price(price)
                 .isAvailable(isAvailable)
                 .build();

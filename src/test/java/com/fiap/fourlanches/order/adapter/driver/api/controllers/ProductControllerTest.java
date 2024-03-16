@@ -107,7 +107,9 @@ class ProductControllerTest {
     when(productUseCase.getProductsByCategory(eq(DRINK))).thenReturn(expected);
 
     MockHttpServletResponse response = mvc.perform(get("/products/categories/" + DRINK)
-            .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+            .accept(MediaType.APPLICATION_JSON))
+            .andReturn()
+            .getResponse();
 
     List<Product> products = new ObjectMapper().readValue(response.getContentAsString() , getProductListType());
     assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());

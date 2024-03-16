@@ -91,7 +91,7 @@ class OrderRepositoryImplTest {
 
     OrderJpaEntity updatedOrder = OrderJpaEntity.builder()
             .id(ORDER_ID)
-            .status(IN_PREPARATION.toString())
+            .status(IN_PREPARATION.toString().toUpperCase())
             .paymentApproved(true)
             .orderItems(emptyList())
             .build();

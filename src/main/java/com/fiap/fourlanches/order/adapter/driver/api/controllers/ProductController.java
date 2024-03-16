@@ -36,8 +36,9 @@ public class ProductController {
 
     @GetMapping(value = "/categories/{category}", produces = "application/json")
     @ApiResponse(responseCode = "200")
-    public List<Product> getProductsByCategory(@PathVariable Category category) {
-        return productUseCase.getProductsByCategory(category);
+    public List<Product> getProductsByCategory(@PathVariable String category) {
+        var categoryParam = Category.fromString(category);
+        return productUseCase.getProductsByCategory(categoryParam);
     }
 
     @PostMapping(value = "", produces = "application/json")

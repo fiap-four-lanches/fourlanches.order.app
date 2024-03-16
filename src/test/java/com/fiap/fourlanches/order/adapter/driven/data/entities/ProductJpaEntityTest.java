@@ -48,7 +48,7 @@ class ProductJpaEntityTest {
     assertThat(productJpaEntity.getId()).isEqualTo(ID);
     assertThat(productJpaEntity.getName()).isEqualTo(NAME);
     assertThat(productJpaEntity.getDescription()).isEqualTo(DESCRIPTION);
-    assertThat(productJpaEntity.getCategory()).isEqualTo(Category.DRINK.name());
+    assertThat(productJpaEntity.getCategory()).isEqualTo(Category.DRINK.toString());
     assertThat(productJpaEntity.getPrice()).isEqualTo(PRICE);
     assertThat(productJpaEntity.getIsAvailable()).isFalse();
   }
