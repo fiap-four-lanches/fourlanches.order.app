@@ -79,12 +79,8 @@ jacocoTestReport {
 					"com/fiap/**/RabbitMQConfig*",
 					"com/fiap/**/*Exception*",
 					"com/fiap/**/InternalServerError*",
-					"com/fiap/**/FailPublishToQueueException*",
 					"com/fiap/**/HeaderConstant*",
-					"com/fiap/**/KitchenProductionQueueMessageDTO*",
 					"com/fiap/**/OrderControllerAdvisor*",
-					"com/fiap/**/OrderStatusQueueMessageDTO*",
-					"com/fiap/**/PaymentQueueMessageDTO*",
 					"com/fiap/**/FourLanchesApplication*"
 			])
 		}))
