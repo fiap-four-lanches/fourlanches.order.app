@@ -80,27 +80,19 @@ public class OrderController {
     @PostMapping(value = "", produces = "application/json")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Order> createOrder(@RequestHeader(X_REQUEST_ID) String xRequestId,
-                                             @RequestBody OrderDTO orderDTO) throws InvalidOrderException {
+                                             @RequestBody OrderDTO orderDTO) throws InvalidOrderException, JsonProcessingException, AmqpException {
 
         var orderCreated = orderUseCase.createOrder(orderDTO);
 
-        try {
-            MessageProperties messageProperties = new MessageProperties();
-            Map<String, Object> headers = new HashMap<>();
-            headers.put(X_REQUEST_ID, xRequestId);
-            messageProperties.setHeaders(headers);
-            var paymentMessage = PaymentQueueMessageDTO.fromOrder(orderCreated);
-            var objectMapper = new ObjectMapper();
-            var paymentMessageJson = objectMapper.writeValueAsString(paymentMessage);
-            var message = new Message(paymentMessageJson.getBytes(), messageProperties);
-            queueSender.convertAndSend(QUEUE_PAYMENT_NAME, message);
-        } catch (JsonProcessingException e) {
-            log.error(PAYMENT_JSON_ERR_MSG, e);
-            throw new FailPublishToQueueException(PAYMENT_JSON_ERR_MSG, e);
-        } catch (AmqpException e) {
-            log.error(PUBLISH_ERR_MSG, e);
-            throw new FailPublishToQueueException(PUBLISH_ERR_MSG, e);
-        }
+        MessageProperties messageProperties = new MessageProperties();
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(X_REQUEST_ID, xRequestId);
+        messageProperties.setHeaders(headers);
+        var paymentMessage = PaymentQueueMessageDTO.fromOrder(orderCreated);
+        var objectMapper = new ObjectMapper();
+        var paymentMessageJson = objectMapper.writeValueAsString(paymentMessage);
+        var message = new Message(paymentMessageJson.getBytes(), messageProperties);
+        queueSender.convertAndSend(QUEUE_PAYMENT_NAME, message);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderCreated);
     }
@@ -132,27 +124,19 @@ public class OrderController {
     @PatchMapping(value = "/{orderId}/cancel", produces = "application/json")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Void> orderCanceled(@RequestHeader(X_REQUEST_ID) String xRequestId,
-                                              @PathVariable Long orderId) {
+                                              @PathVariable Long orderId) throws JsonProcessingException, AmqpException {
         var orderCanceled = orderUseCase.orderCanceled(orderId);
 
-        try {
-            MessageProperties messageProperties = new MessageProperties();
-            Map<String, Object> headers = new HashMap<>();
-            headers.put(X_REQUEST_ID, xRequestId);
-            messageProperties.setHeaders(headers);
-            var orderStatusMessage = OrderStatusQueueMessageDTO.fromOrder(orderCanceled);
-            var objectMapper = new ObjectMapper();
-            var paymentMessageJson = objectMapper.writeValueAsString(orderStatusMessage);
-            var message = new Message(paymentMessageJson.getBytes(), messageProperties);
-            queueSender.convertAndSend(QUEUE_PAYMENT_CANCEL_NAME, message);
-            queueSender.convertAndSend(QUEUE_KITCHEN_CANCEL_NAME, message);
-        } catch (JsonProcessingException e) {
-            log.error(CANCELLATION_JSON_ERR_MSG, e);
-            throw new FailPublishToQueueException(CANCELLATION_JSON_ERR_MSG, e);
-        } catch (AmqpException e) {
-            log.error(CANCELLATION_ERR_MSG, e);
-            throw new FailPublishToQueueException(CANCELLATION_ERR_MSG, e);
-        }
+        MessageProperties messageProperties = new MessageProperties();
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(X_REQUEST_ID, xRequestId);
+        messageProperties.setHeaders(headers);
+        var orderStatusMessage = OrderStatusQueueMessageDTO.fromOrder(orderCanceled);
+        var objectMapper = new ObjectMapper();
+        var paymentMessageJson = objectMapper.writeValueAsString(orderStatusMessage);
+        var message = new Message(paymentMessageJson.getBytes(), messageProperties);
+        queueSender.convertAndSend(QUEUE_PAYMENT_CANCEL_NAME, message);
+        queueSender.convertAndSend(QUEUE_KITCHEN_CANCEL_NAME, message);
 
         return ResponseEntity.noContent().build();
     }
