@@ -46,4 +46,34 @@ class OrderControllerAdvisorTest {
     assertThat(response.getBody()).isEqualTo(expectedErrorMessage);
   }
 
+  @Test
+  void shouldHandleFailPublishToQueueException() {
+    var expectedErrorMessage = new ApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Fail to publish message to queue");
+
+    ResponseEntity<ApiErrorMessage> response = orderControllerAdvisor.handleFailPublishToQueueException();
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    assertThat(response.getBody()).isEqualTo(expectedErrorMessage);
+  }
+
+  @Test
+  void shouldHandleJsonProcessingException() {
+    var expectedErrorMessage = new ApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Error generating message to send to queue");
+
+    ResponseEntity<ApiErrorMessage> response = orderControllerAdvisor.handleJsonProcessingException();
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    assertThat(response.getBody()).isEqualTo(expectedErrorMessage);
+  }
+
+  @Test
+  void shouldHandleAmqpExceptionn() {
+    var expectedErrorMessage = new ApiErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "An error happened while sending message to queue");
+
+    ResponseEntity<ApiErrorMessage> response = orderControllerAdvisor.handleAmqpException();
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    assertThat(response.getBody()).isEqualTo(expectedErrorMessage);
+  }
+
 }

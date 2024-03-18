@@ -40,3 +40,5 @@ out/
 ### DB files ###
 data/
 
+.env
+.docker-conf

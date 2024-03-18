@@ -1,14 +1,13 @@
 package com.fiap.fourlanches.order.application.usecases;
 
 import com.fiap.fourlanches.order.application.dto.OrderDTO;
+import com.fiap.fourlanches.order.application.exception.FailPublishToQueueException;
 import com.fiap.fourlanches.order.domain.entities.Order;
-import com.fiap.fourlanches.order.domain.entities.Product;
 import com.fiap.fourlanches.order.domain.exception.InvalidOrderException;
 import com.fiap.fourlanches.order.domain.repositories.OrderRepository;
-import com.fiap.fourlanches.order.domain.usecases.ValidateOrderStatusUseCase;
 import com.fiap.fourlanches.order.domain.usecases.OrderUseCase;
 import com.fiap.fourlanches.order.domain.usecases.ProductUseCase;
-import com.fiap.fourlanches.order.domain.valueobjects.OrderItem;
+import com.fiap.fourlanches.order.domain.usecases.ValidateOrderStatusUseCase;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +16,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.CANCELED;
-import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.CREATED;
-import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.FINISHED;
-import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.IN_PREPARATION;
-import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.READY;
-import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.RECEIVED;
+import static com.fiap.fourlanches.order.domain.valueobjects.OrderStatus.*;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class OrderUseCaseImpl implements OrderUseCase {
+
 
     private final OrderRepository repository;
     private final ValidateOrderStatusUseCase validateOrderStatusUseCase;
@@ -39,7 +34,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     @Override
-    public Long createOrder(OrderDTO orderDTO) throws InvalidOrderException {
+    public Order createOrder(OrderDTO orderDTO) throws InvalidOrderException, FailPublishToQueueException {
         Order order = orderDTO.toNewOrder();
 
         delegateOrderStatusValidation(order, OrderDTO.builder().status(CREATED).build());
@@ -47,18 +42,19 @@ public class OrderUseCaseImpl implements OrderUseCase {
         setOrderItemPrices(order);
         order.setTotalPrice(order.calculateTotalPrice());
 
-        if(!order.isValid()) {
+        if (!order.isValid()) {
             throw new InvalidOrderException();
         }
 
-        return repository.createOrder(order).getId();
+        return repository.createOrder(order);
     }
 
-    public void receiveOrder(Long orderId, boolean paymentApproved) {
+    public Order receiveOrder(Long orderId, boolean paymentApproved) {
         Order order = repository.getById(orderId);
         delegateOrderStatusValidation(order, OrderDTO.builder().status(RECEIVED).build());
         order.setPaymentApproved(paymentApproved);
         repository.updateOrder(orderId, order);
+        return order;
     }
 
     @Override
@@ -77,8 +73,9 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     @Override
-    public void orderCanceled(Long orderId) {
-        updateOrderStatus(orderId, CANCELED);
+    public Order orderCanceled(Long orderId) {
+        return updateOrderStatus(orderId, CANCELED);
+
     }
 
     @Override
@@ -86,14 +83,15 @@ public class OrderUseCaseImpl implements OrderUseCase {
         return repository.getOrdersByStatus(status);
     }
 
-    private void updateOrderStatus(Long orderId, OrderStatus orderStatus) {
-        Order order = repository.getById(orderId);
+    private Order updateOrderStatus(Long orderId, OrderStatus orderStatus) {
+        var order = repository.getById(orderId);
         delegateOrderStatusValidation(order, OrderDTO.builder().status(orderStatus).build());
         repository.updateOrder(orderId, order);
+        return order;
     }
 
     private void delegateOrderStatusValidation(Order order, OrderDTO orderDTO) {
-        if(!ObjectUtils.isEmpty(orderDTO.getStatus())) {
+        if (!ObjectUtils.isEmpty(orderDTO.getStatus())) {
             switch (orderDTO.getStatus()) {
                 case CREATED -> validateOrderStatusUseCase.validateOrderCreated(order);
                 case RECEIVED -> validateOrderStatusUseCase.validateOrderReceived(order);

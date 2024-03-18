@@ -7,7 +7,9 @@ import com.fiap.fourlanches.order.domain.repositories.OrderRepository;
 import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -50,6 +52,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         OrderJpaEntity orderJpaEntity = jpaRepository.getReferenceById(id);
         orderJpaEntity.setStatus(order.getStatus().name());
         orderJpaEntity.setPaymentApproved(order.getPaymentApproved());
+        orderJpaEntity.setUpdatedAt(LocalDateTime.now());
         jpaRepository.save(orderJpaEntity);
     }
 

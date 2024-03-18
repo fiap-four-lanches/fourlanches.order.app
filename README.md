@@ -17,75 +17,38 @@
 * Kubernetes - K8S
 
 ### 3. Para executar localmente com Docker
-#### 3.1. Para buildar, executar as migration e rodar o app no docker pela primeira vez
+#### 3.1. Necessário um arquivo .env na raiz do projeto com a seguinte conteúdo:
 
-`docker compose up --build -d`
+Para executar localmente com o docker é necessário fazer uma cópia do arquivo .env.example, renomear a
+cópia para .env e configurar as variavéis de acordo com o ambiente.
 
-#### 3.2. Para executar o app com docker após a primeira vez
-Após rodar a primeira o comando acima, execute o seguinte comando abaixo para que apenas execute 
-os containers sem a etapa de build e migration.
-
-`docker compose up -d app db`
-
-#### 3.3. Necessário um arquivo .env na raiz do projeto com a seguinte conteúdo:
 ```
 DATABASE_USERNAME=username_do_banco  
 DATABASE_PASSWORD=password_do_banco
 ```
 
-### 4. Para rodar com K8S
+#### 3.2. Para buildar, executar as migration e rodar o app no docker pela primeira vez
 
-#### 4.1. Subindo o postgres como base de dados
-Antes de subir os pods com a aplicação é necessário confirmar que o K8S esteja executando e depois
-executar os seguintes comandos a partir da pasta raiz do projeto para subir o pod do Postgres. 
-A ordem dos comandos precisa ser mantida.
-```
-kubectl apply -f k8s/db/postgres-db-pv.yml 
+`docker compose up --build -d`
 
-kubectl apply -f k8s/db/postgres-db-pvc.yml
+#### 3.3. Para executar o app com docker após a primeira vez
+Após rodar a primeira o comando acima, execute o seguinte comando abaixo para que apenas execute 
+os containers sem a etapa de build e migration.
 
-kubectl apply -f k8s/db/postgres-db-secrets.yml 
+`docker compose up -d app db rabbitmq`
 
-kubectl apply -f k8s/db/postgres-db-configmap.yml         
+#### 3.4. Preparando o RabbitMQ
+Após subir todos os containeres necessários, é preciso realizar os seguintes passos:
+1. Acessar o rabbitmq no `localhost:15672` (configuração padrão) com  usários e senha configurados no arquivo `.env.`
+2. Após logado é necessário criar as 3 filas e o exchange, usando os mesmos  valores das variaveis usadas no arquivo `.env`
+3. E por final, deve ser criado os bindings no exchange criado anteriormente
+   * Os binds criados devem: ser vazio (bind default) e um com o seguinte valor: `order.status.update`
 
-kubectl apply -f k8s/db/postgres-db-deployment.yml
-
-kubectl apply -f k8s/db/postgres-db-svc.yml 
-```
-Para confirmar que tudo deu certo, basta confirmar se tudo subiu corretamente executando um
-`kubectl get all` e validar se consegue visualizar o pod e service em execução.
-
-#### 4.2. Executando a migração
-Com o posgres executando, agora é fora de executar a migração para criação das tabelas.
-```
-kubectl apply -f k8s/migration/flyway-configmap.yml 
-
-kubectl apply -f k8s/app/fourlanches-secrets.yml 
-
-kubectl apply -f k8s/migration/flyway-job.yml 
-```
-#### 4.3. Subindo a aplicação
-Agora com o postgres executando e com as tabelas criadas, basta executar os comandos abaixo:
-```
-kubectl apply -f k8s/app/fourlanches-configmap.yml 
-
-kubectl apply -f k8s/app/fourlanches-deployment.yml
-
-kubectl apply -f k8s/app/fourlanches-loadbalancer.yml
-
-kubectl apply -f k8s/app/fourlanches-svc.yml         
-```
-
-### 5. Testando com insomnia
+### 4. Testando com insomnia
 Para executar as requisições com o insomnia, basta importar o arquivo `insomnia-collection.json`
 no seu insomnia que a collection estará pronta para ser usada.
 
-#### 5.1. Nota para executar com Insomnia executando pelo Docker
+#### 4.1. Nota para executar com Insomnia executando pelo Docker
 Subindo a aplicação via docker, a mesma se encotrará disponível no localhost:8080 para ser acessada
 
-#### 5.1. Nota para executar com Insomnia executando pelo K8S
-Para testar os endpoints caso a execução seja realizada via K8S, deverá ser atualizada a URL com a PORTA correta exposta
-pelo K8S. Por exemplo, caso use o minikube basta executar o comando `minikube service fourlanches-loadbalancer` e o mesmo
-irá expor a url e porta correta e abrirá o link direto no nvaegador.
-
-### 6. Links Adicionais
+### 5. Links Adicionais

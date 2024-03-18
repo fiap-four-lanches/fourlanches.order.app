@@ -22,11 +22,23 @@ services:
     container_name: app
     depends_on:
       - db
+      - rabbitmq
     environment:
-      - POSTGRESQL_DATASOURCE_URL=jdbc:postgresql://db:5432/fourlanches
+      - POSTGRESQL_DATASOURCE_URL=${POSTGRESQL_DATASOURCE_URL}
       - DATABASE_USERNAME=${DATABASE_USERNAME}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - QUEUE_EXCHANGE=${QUEUE_EXCHANGE}
+      - QUEUE_ORDER_STATUS_NAME=${QUEUE_ORDER_STATUS_NAME}
+      - QUEUE_PAYMENT_NAME=${QUEUE_PAYMENT_NAME}
+      - QUEUE_PAYMENT_CANCEL_NAME=${QUEUE_PAYMENT_CANCEL_NAME}
+      - QUEUE_KITCHEN_NAME=${QUEUE_KITCHEN_NAME}
+      - QUEUE_KITCHEN_CANCEL_NAME=${QUEUE_KITCHEN_CANCEL_NAME}
     ports:
       - "8080:8080"
   migration:
@@ -37,7 +49,7 @@ services:
     environment:
       - FLYWAY_USER=${DATABASE_USERNAME}
       - FLYWAY_PASSWORD=${DATABASE_PASSWORD}
-      - FLYWAY_URL=jdbc:postgresql://db:5432/fourlanches
+      - FLYWAY_URL=${POSTGRESQL_DATASOURCE_URL}
       - FLYWAY_SCHEMAS=public
       - FLYWAY_GROUP=true
     command: -locations=filesystem:/flyway/sql -connectRetries=60 migrate
@@ -45,3 +57,14 @@ services:
       - ./src/main/resources/db/migration:/flyway/sql
     depends_on:
       - db
+  rabbitmq:
+    env_file:
+      - .env
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./.docker-conf/rabbitmq/log/:/var/log/rabbitmq

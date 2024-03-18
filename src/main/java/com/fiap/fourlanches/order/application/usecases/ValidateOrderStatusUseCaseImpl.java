@@ -27,8 +27,8 @@ public class ValidateOrderStatusUseCaseImpl implements ValidateOrderStatusUseCas
 
     private final Map<OrderStatus, List<OrderStatus>> nextStatuses = Map.of(
             CREATED, List.of(RECEIVED, CANCELED),
-            RECEIVED, List.of(IN_PREPARATION),
-            IN_PREPARATION, List.of(READY),
+            RECEIVED, List.of(IN_PREPARATION, CANCELED),
+            IN_PREPARATION, List.of(READY, CANCELED),
             READY, List.of(FINISHED),
             FINISHED, Collections.emptyList(),
             CANCELED, Collections.emptyList()
@@ -77,6 +77,7 @@ public class ValidateOrderStatusUseCaseImpl implements ValidateOrderStatusUseCas
     }
 
     private boolean isNextStatusPossible(OrderStatus oldStatus, OrderStatus newStatus) {
+        log.info("oldStatus: {}, newStatus {}", oldStatus, newStatus);
         return nextStatuses.get(oldStatus).contains(newStatus);
     }
 

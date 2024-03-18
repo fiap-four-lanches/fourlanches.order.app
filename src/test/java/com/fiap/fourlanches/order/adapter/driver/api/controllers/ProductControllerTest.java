@@ -6,12 +6,9 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor.ApiErrorMessage;
 import com.fiap.fourlanches.order.adapter.driver.api.controllersAdvisor.ProductControllerAdvisor;
-import com.fiap.fourlanches.order.application.dto.OrderDTO;
 import com.fiap.fourlanches.order.application.dto.ProductDTO;
 import com.fiap.fourlanches.order.domain.entities.Product;
-import com.fiap.fourlanches.order.domain.exception.InvalidOrderException;
 import com.fiap.fourlanches.order.domain.usecases.ProductUseCase;
-import com.fiap.fourlanches.order.domain.valueobjects.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,10 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -47,6 +46,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfiguration.class)
 class ProductControllerTest {
 
   private static final long PRODUCT_ID = 1234L;
@@ -107,7 +107,9 @@ class ProductControllerTest {
     when(productUseCase.getProductsByCategory(eq(DRINK))).thenReturn(expected);
 
     MockHttpServletResponse response = mvc.perform(get("/products/categories/" + DRINK)
-            .accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+            .accept(MediaType.APPLICATION_JSON))
+            .andReturn()
+            .getResponse();
 
     List<Product> products = new ObjectMapper().readValue(response.getContentAsString() , getProductListType());
     assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
