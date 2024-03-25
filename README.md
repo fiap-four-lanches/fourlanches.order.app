@@ -43,12 +43,13 @@ Após subir todos os containeres necessários, é preciso realizar os seguintes 
 2. Após logado é necessário criar as 3 filas e o exchange, usando os mesmos  valores das variaveis usadas no arquivo `.env`
 3. E por final, deve ser criado os bindings no exchange criado anteriormente
    * Os binds criados devem: ser vazio (bind default) e um com o seguinte valor: `order.status.update`
+> Observação: em caso de subir as tres aplicações localmente, deverá ser usado apenas uma instancia do rabbitmq no docker,
+> ou um serviço online, como o cloudamqp.
 
-### 4. Testando com insomnia
-Para executar as requisições com o insomnia, basta importar o arquivo `insomnia-collection.json`
-no seu insomnia que a collection estará pronta para ser usada.
+### 4. Testando
+Basta acessar a url do swagger disponivel em `http://localhost/swagger-ui/index.htm`
 
-#### 4.1. Nota para executar com Insomnia executando pelo Docker
+#### 4.1. Nota para executar o localmente  pelo Docker
 Subindo a aplicação via docker, a mesma se encotrará disponível no localhost:8080 para ser acessada
 
 ### 5. Links Adicionais
