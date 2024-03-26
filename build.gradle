@@ -50,7 +50,7 @@ dependencies {
 }
 
 flyway {
-	url = 'jdbc:postgresql://localhost:5432/fourlanches'
+	url = System.getenv('POSTGRESQL_DATASOURCE_URL')
 	user = System.getenv('DATABASE_USERNAME')
 	password = System.getenv('DATABASE_PASSWORD')
 	cleanDisabled = false
