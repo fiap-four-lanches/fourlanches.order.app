@@ -86,7 +86,7 @@ jobs:
       run: |
         IMAGE_TAG=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}        
         cd ./k8s-repo/charts/order
-        sed -i "s|tag: .*|${IMAGE_TAG}|g" values.yaml
+        sed -i "s|tag: .*|tag: \${IMAGE_TAG}|g" values.yaml
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -am "Update image tag for ${{ github.repository }}"
