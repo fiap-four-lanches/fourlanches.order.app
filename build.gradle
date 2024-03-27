@@ -54,6 +54,8 @@ flyway {
 	user = System.getenv('DATABASE_USERNAME')
 	password = System.getenv('DATABASE_PASSWORD')
 	cleanDisabled = false
+	schemas = ['order']
+	createSchemas = true
 }
 
 tasks.named('test') {
